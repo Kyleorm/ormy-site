@@ -514,15 +514,6 @@ p{margin:0}
 .final .fine{margin-top:16px;font:600 13.5px var(--body);color:var(--muted)}
 @media (max-width:420px){.fn-form{flex-direction:column}.fn-form .btn.hot{justify-content:space-between}}
 
-/* ...and the page nudges you on the way down, the way Ormy does */
-.nudge{position:fixed;z-index:80;top:calc(8px + env(safe-area-inset-top,0px));left:8px;right:8px;max-width:420px;margin:0 auto;cursor:pointer;transform:translateY(calc(-100% - 24px));transition:transform .6s cubic-bezier(.2,.9,.25,1.08);-webkit-tap-highlight-color:transparent}
-.nudge.show{transform:none}
-.nudge .ntf{--k:1px;background:rgba(250,250,249,.9);box-shadow:0 0 0 .5px rgba(0,0,0,.08),0 18px 40px -14px rgba(26,23,20,.45)}
-@media (min-width:960px){
-  .nudge{left:auto;right:20px;top:86px;width:380px;max-width:none;margin:0;transform:translateX(calc(100% + 40px))}
-  .nudge.show{transform:none}
-}
-
 .foot{border-top:1px solid var(--line)}
 .foot .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px;padding-block:28px calc(34px + env(safe-area-inset-bottom,0px));font:600 14px var(--body);color:var(--muted)}
 .foot nav{display:flex;gap:20px}
@@ -614,7 +605,7 @@ p{margin:0}
   <div class="wrap">
     <div class="p-copy">
       <div class="ptitle" id="ptitle"><span class="pt-words">The <span class="pt-key">problem<svg class="pt-mark" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1"/></svg></span></span></div>
-      <h2>Your phone reminds you once.<br>Then it's <em>too late</em>.</h2>
+      <h2>Other reminder apps tell you once.<br>Then it's <em>too late</em>.</h2>
       <p class="lede">You knew about the dentist. You knew it was Mum's birthday. Your brain just didn't bring it up in time.</p>
     </div>
 
@@ -855,10 +846,6 @@ p{margin:0}
     <span>© 2026 Ormy</span>
   </div>
 </footer>
-
-<div class="nudge" id="nudge" role="status" aria-live="polite">
-  <div class="ntf"><img src="img/icon.png" alt=""><div><div class="top"><b>TIME SENSITIVE</b><span>now</span></div><div class="t" id="nudgeT">NUDGE 1 — Join the waitlist</div><div class="s due">Due now</div></div></div>
-</div>
 </main>
 
 <script src="js/motion.js"></script>   <!-- Motion 13.4.2, MIT, served from this site -->
@@ -1317,36 +1304,19 @@ p{margin:0}
     $$('.chips span', el).forEach(function(c){ c.classList.remove('lit', 'pop'); });
   });
 
-  /* ---------------- the page nudges you, the way Ormy does ---------------- */
-  // Same wording as the app: NUDGE 1, NUDGE 2, then FINAL NUDGE, due when you arrived.
+  /* ---------------- the FINAL NUDGE ---------------- */
+  // The waitlist box is dressed as Ormy's own FINAL NUDGE, in the app's wording, due at the
+  // time you arrived on the page ("Due 4:12pm · 3 minutes ago").
   var landed = new Date();
   function clockOf(d){ var h = d.getHours(), m = d.getMinutes(); return (h % 12 || 12) + (m ? ':' + (m < 10 ? '0' : '') + m : '') + (h < 12 ? 'am' : 'pm'); }
   function dueLine(){
     var mins = Math.floor((Date.now() - landed) / 60000), due = 'Due ' + clockOf(landed);
     return mins < 1 ? due : due + ' · ' + (mins === 1 ? '1 minute ago' : mins < 60 ? mins + ' minutes ago' : 'an hour ago');
   }
-  var nudge = $('#nudge'), finalSec = $('#waitlist');
-  var sent = 0, joined = false, sawFinal = false, hideT = null;
-  function showNudge(n){
-    if (joined || sent >= n || finalSec.getBoundingClientRect().top < innerHeight) return;
-    sent = n;
-    $('#nudgeT').textContent = 'NUDGE ' + n + ' — Join the waitlist';
-    $('.due', nudge).textContent = dueLine();
-    nudge.classList.add('show');
-    clearTimeout(hideT); hideT = setTimeout(hideNudge, 5000);
-  }
-  function hideNudge(){ nudge.classList.remove('show'); }
-  nudge.addEventListener('click', function(){ hideNudge(); finalSec.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' }); });
-  var touchY = null;
-  nudge.addEventListener('touchstart', function(e){ touchY = e.touches[0].clientY; }, { passive: true });
-  nudge.addEventListener('touchmove', function(e){ if (touchY !== null && e.touches[0].clientY - touchY < -16) { touchY = null; hideNudge(); } }, { passive: true });
-  // NUDGE 1 once the problem has sunk in; NUDGE 2 halfway through the day. Never mid-story.
-  var midDay = $('[data-play="drag"]').closest('.moment');
-  function checkNudges(){
-    if ($('#nap').getBoundingClientRect().top < innerHeight * .55) showNudge(1);
-    if (midDay.getBoundingClientRect().top < innerHeight * .5) showNudge(2);
+  var finalSec = $('#waitlist'), sawFinal = false;
+  function checkFinal(){
     var fr = finalSec.getBoundingClientRect();
-    if (fr.top < innerHeight * .75) { hideNudge(); sawFinal = true; }
+    if (fr.top < innerHeight * .75) sawFinal = true;
     if (fr.top < innerHeight) $('.due', finalSec).textContent = dueLine();
   }
 
@@ -1362,7 +1332,7 @@ p{margin:0}
   }
 
   var queued = false;
-  function render(){ navTick(); renderStory(); renderGone(); checkNap(); light(); checkPlayers(); checkNudges(); }
+  function render(){ navTick(); renderStory(); renderGone(); checkNap(); light(); checkPlayers(); checkFinal(); }
   function onScroll(){
     if (queued) return; queued = true;
     requestAnimationFrame(function(){ queued = false; render(); });
@@ -1393,11 +1363,10 @@ p{margin:0}
   }
 
   // Joining, from either box: the address goes onto the waitlist in Convex, and only once
-  // it's safely there is it ticked off like any reminder, saying how many times this
-  // visitor was actually chased (the banners they saw, plus the FINAL NUDGE if they got that far).
+  // it's safely there is it ticked off like any reminder ("chased you 1 time" if they got
+  // as far as the FINAL NUDGE; no chased line if they joined before it).
   var ENDPOINT = $('meta[name="waitlist-endpoint"]').content;
   function showJoined(n){
-    joined = true; hideNudge();
     var card = $('#joinCard');
     $('#chased').textContent = 'Ormy chased you ' + n + (n === 1 ? ' time' : ' times');
     card.classList.toggle('nochase', n < 1);
@@ -1416,12 +1385,12 @@ p{margin:0}
       var email = input.value.trim();
       err.textContent = '';
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { input.value = ''; input.placeholder = 'That email looks off. Try again?'; input.focus(); return; }
-      var n = sent + (sawFinal ? 1 : 0);
+      var n = sawFinal ? 1 : 0;
       busy = true; btn.disabled = true; btn.firstChild.nodeValue = 'Joining…';
       fetch(ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email, source: form.classList.contains('mini-join') ? 'why' : 'final', nudges: n, referrer: document.referrer, company: $('.hp', form).value })
+        body: JSON.stringify({ email: email, source: form.classList.contains('mini-join') ? 'why' : 'final', referrer: document.referrer, company: $('.hp', form).value })
       })
         .then(function(r){ if (!r.ok) throw new Error('waitlist ' + r.status); showJoined(n); })
         .catch(function(){ err.textContent = "Couldn't reach Ormy just then. Try again?"; })
