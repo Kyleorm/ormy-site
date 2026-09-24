@@ -1366,6 +1366,9 @@ p{margin:0}
   // it's safely there is it ticked off like any reminder ("chased you 1 time" if they got
   // as far as the FINAL NUDGE; no chased line if they joined before it).
   var ENDPOINT = $('meta[name="waitlist-endpoint"]').content;
+  // A copy of the page running on this computer (tests, previews) never writes to the live
+  // list: it pretends the sign-up worked instead. A test once left a fake address in it.
+  var LOCAL = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname) || location.protocol === 'file:';
   function showJoined(n){
     var card = $('#joinCard');
     $('#chased').textContent = 'Ormy chased you ' + n + (n === 1 ? ' time' : ' times');
@@ -1387,11 +1390,11 @@ p{margin:0}
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { input.value = ''; input.placeholder = 'That email looks off. Try again?'; input.focus(); return; }
       var n = sawFinal ? 1 : 0;
       busy = true; btn.disabled = true; btn.firstChild.nodeValue = 'Joining…';
-      fetch(ENDPOINT, {
+      (LOCAL ? Promise.resolve({ ok: true }) : fetch(ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email, source: form.classList.contains('mini-join') ? 'why' : 'final', referrer: document.referrer, company: $('.hp', form).value })
-      })
+      }))
         .then(function(r){ if (!r.ok) throw new Error('waitlist ' + r.status); showJoined(n); })
         .catch(function(){ err.textContent = "Couldn't reach Ormy just then. Try again?"; })
         .then(function(){ busy = false; btn.disabled = false; btn.firstChild.nodeValue = label; });
