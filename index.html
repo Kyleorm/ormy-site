@@ -265,6 +265,19 @@ p{margin:0}
 .p-ghost{position:absolute;inset:0;display:grid;place-items:center;border-radius:calc(24 * var(--k));border:1.5px dashed #DCD6CF;font:700 13px var(--body);color:var(--muted);opacity:0}
 .p-late{position:absolute;left:0;right:0;top:0;display:grid;gap:10px}
 .p-late .ntf{opacity:0}
+/* short phones (an SE in Safari has ~550px): the same section, a size smaller, so the
+   missed call at the end still fits on screen */
+@media (max-width:959px) and (max-height:760px){
+  .ptitle{font-size:46px}
+  .p-copy h2{font-size:29px}
+  .p-copy .lede{font-size:15px;margin-top:10px}
+  .p-seq{margin-top:18px}
+  .p-clock{font-size:56px}
+  .p-notes{--k:.86px}
+}
+@media (max-width:959px) and (max-height:620px){
+  .p-copy .lede{display:none}
+}
 @media (min-width:900px){
   .p-stage{padding-top:40px}
   .p-stage > .wrap{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
@@ -601,7 +614,7 @@ p{margin:0}
   <div class="wrap">
     <div class="p-copy">
       <div class="ptitle" id="ptitle"><span class="pt-words">The <span class="pt-key">problem<svg class="pt-mark" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1"/></svg></span></span></div>
-      <h2>You only find out when it's <em>too late</em></h2>
+      <h2>Your phone reminds you once.<br>Then it's <em>too late</em>.</h2>
       <p class="lede">You knew about the dentist. You knew it was Mum's birthday. Your brain just didn't bring it up in time.</p>
     </div>
 
