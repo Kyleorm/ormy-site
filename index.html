@@ -251,6 +251,16 @@ p{margin:0}
 .p-cap.end{top:-4px;font:700 clamp(28px,3vw,34px)/1.1 var(--display);font-variation-settings:'opsz' 72;letter-spacing:-.02em;color:var(--head)}
 .p-notes{--k:.92px;position:relative;height:calc(186 * var(--k));margin-top:14px}
 .p-slot{position:relative}
+/* the ordinary reminder lands like a real banner: drops in, buzzes, and an orange ring
+   pulses once, so it can't be missed before it's swiped away */
+.rem-pop{position:relative;opacity:0;transform:translateY(-46px) scale(.86)}
+.rem-pop.in{animation:remDrop .7s cubic-bezier(.2,1.55,.35,1) forwards,remBuzz .45s ease-in-out .72s}
+.rem-pop::after{content:"";position:absolute;inset:-7px;border-radius:calc(24 * var(--k) + 7px);box-shadow:0 0 0 2.5px rgba(255,90,31,.7);opacity:0;pointer-events:none}
+.rem-pop.in::after{animation:remRing 1.2s ease-out .5s}
+@keyframes remDrop{0%{opacity:0;transform:translateY(-46px) scale(.86)}45%{opacity:1}100%{opacity:1;transform:none}}
+@keyframes remBuzz{0%,100%{transform:none}20%{transform:translateX(-5px) rotate(-1deg)}40%{transform:translateX(5px) rotate(1deg)}60%{transform:translateX(-3px) rotate(-.5deg)}80%{transform:translateX(3px)}}
+@keyframes remRing{0%{opacity:1;transform:scale(.97)}100%{opacity:0;transform:scale(1.14)}}
+@media (prefers-reduced-motion:reduce){.rem-pop.in{animation:none;opacity:1;transform:none}.rem-pop.in::after{animation:none}}
 .p-notes .ntf{--k:inherit;background:#fff;box-shadow:0 0 0 .5px rgba(0,0,0,.05),0 12px 26px -12px rgba(26,23,20,.28)}
 .p-ghost{position:absolute;inset:0;display:grid;place-items:center;border-radius:calc(24 * var(--k));border:1.5px dashed #DCD6CF;font:700 13px var(--body);color:var(--muted);opacity:0}
 .p-late{position:absolute;left:0;right:0;top:0;display:grid;gap:10px}
@@ -591,7 +601,7 @@ p{margin:0}
   <div class="wrap">
     <div class="p-copy">
       <div class="ptitle" id="ptitle"><span class="pt-words">The <span class="pt-key">problem<svg class="pt-mark" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1"/></svg></span></span></div>
-      <h2>Stop finding out when it's <em>too late</em></h2>
+      <h2>You only find out when it's <em>too late</em></h2>
       <p class="lede">You knew about the dentist. You knew it was Mum's birthday. Your brain just didn't bring it up in time.</p>
     </div>
 
@@ -609,10 +619,10 @@ p{margin:0}
       <div class="p-notes">
         <div class="p-slot">
           <div class="p-ghost" id="gGhost">Swiped away</div>
-          <div class="ntf" id="gRem">
+          <div class="rem-pop" id="remPop"><div class="ntf" id="gRem">
             <svg class="ic" viewBox="0 0 38 38" aria-hidden="true"><rect width="38" height="38" rx="9" fill="#fff"/><rect x=".5" y=".5" width="37" height="37" rx="8.5" fill="none" stroke="rgba(0,0,0,.1)"/><circle cx="11" cy="11.5" r="3.3" fill="#0A84FF"/><circle cx="11" cy="19" r="3.3" fill="#FF3B30"/><circle cx="11" cy="26.5" r="3.3" fill="#FF9500"/><rect x="17" y="10.5" width="14" height="2" rx="1" fill="#D5D5DA"/><rect x="17" y="18" width="14" height="2" rx="1" fill="#D5D5DA"/><rect x="17" y="25.5" width="14" height="2" rx="1" fill="#D5D5DA"/></svg>
             <div><div class="t">Dentist<small>now</small></div><div class="s">Today at 2:30 PM</div></div>
-          </div>
+          </div></div>
         </div>
         <div class="p-late">
           <div class="ntf" id="gCall">
@@ -1075,7 +1085,7 @@ p{margin:0}
 
   /* ---------------- the problem ---------------- */
   var problem = $('#problem'), pStage = $('#pStage'), pClock = $('#pClock');
-  var gRem = $('#gRem'), gGhost = $('#gGhost'), gClock = $('#gClock'), gAmPm = $('#gAmPm');
+  var gRem = $('#gRem'), remPop = $('#remPop'), gGhost = $('#gGhost'), gClock = $('#gClock'), gAmPm = $('#gAmPm');
   var gCall = $('#gCall'), gMsg = $('#gMsg'), pCaps = $$('.p-cap');
   // "The problem": the pen circle is drawn in a 200×80 box and stretched to the word's real
   // size in pixels, so the line keeps an even weight however wide the word is.
@@ -1094,12 +1104,13 @@ p{margin:0}
     ptitle.classList.toggle('drawn', r.top < innerHeight * .45);
     var g = clamp(-r.top / (problem.offsetHeight - pStage.offsetHeight), 0, 1);
 
-    // 9:00 AM: one reminder arrives, and is swiped away.
-    var a = seg(g, 0, .08), b = back(a);
-    var sw = inOut(seg(g, .2, .3));
-    gRem.style.opacity = clamp(a * 2, 0, 1) * (1 - seg(g, .23, .3));
-    gRem.style.transform = 'translateY(' + ((1 - b) * -14) + 'px) translateX(' + (-sw * 115) + '%)';
-    gGhost.style.opacity = seg(g, .27, .33) * (1 - seg(g, .74, .78));
+    // 9:00 AM: one ordinary reminder. It has to be noticed, so it lands like a real banner
+    // (a drop, a buzz, a ring) and plays in full however fast you scroll. Then it's swiped away.
+    remPop.classList.toggle('in', g > .02);
+    var sw = inOut(seg(g, .24, .33));
+    gRem.style.opacity = 1 - seg(g, .27, .33);
+    gRem.style.transform = 'translateX(' + (-sw * 115) + '%)';
+    gGhost.style.opacity = seg(g, .3, .35) * (1 - seg(g, .74, .78));
 
     // The clock runs on, straight past 2:30.
     var mins = Math.round(lerp(540, 887, inOut(seg(g, .38, .76))));
