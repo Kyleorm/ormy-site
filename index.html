@@ -254,8 +254,7 @@ p{margin:0}
 .pt-mark path{fill:none;stroke:#D9391B;stroke-width:.056em;stroke-linecap:round;stroke-dasharray:1 1.2;stroke-dashoffset:1.1;transition:stroke-dashoffset 1s cubic-bezier(.6,0,.2,1) .2s}
 .ptitle.drawn .pt-mark path{stroke-dashoffset:0}
 .problem h2 em{background-image:linear-gradient(100deg,#F2553A 0%,#C8231C 100%)}
-.p-tag{display:inline-flex;align-items:center;gap:7px;margin-bottom:12px;font:800 11.5px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
-.p-tag svg{width:13px;height:13px}
+.p-tag{display:inline-block;margin-bottom:12px;font:800 11.5px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .p-stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;display:flex;align-items:center;padding-top:calc(70px + env(safe-area-inset-top,0px))}
 .p-stage > .wrap{width:100%}
 .p-copy h2{margin-top:18px;max-width:11em}
@@ -283,17 +282,18 @@ p{margin:0}
 .p-ghost{position:absolute;inset:0;display:grid;place-items:center;border-radius:calc(24 * var(--k));border:1.5px dashed #DCD6CF;font:700 13px var(--body);color:var(--muted);opacity:0}
 .p-late{position:absolute;left:0;right:0;top:0;display:grid;gap:10px}
 .p-late .ntf{opacity:0}
-/* Phones: in stages, one thing on screen at a time. "The problem" on its own; then the
-   headline, with the line under it arriving just after; then the dentist story. All three
-   share one spot, and each is gone before the next arrives (Kyle's dyslexic friend found
-   reading and watching at once too much). */
+/* Phones: in stages, centred, one thing arriving at a time. "The problem" on its own; it
+   stays while the headline and its line arrive under it; then that whole block goes and
+   the dentist story plays in the same spot (Kyle's dyslexic friend found reading and
+   watching at once too much). */
 @media (max-width:899px){
   .problem{height:440vh;height:440lvh}
-  .p-stage > .wrap,.p-copy{display:grid;align-items:center}
-  .p-copy,.p-seq,.ptitle,.p-say{grid-area:1/1}
-  .p-copy h2{margin-top:0}
+  .p-stage > .wrap{display:grid;align-items:center}
+  .p-copy,.p-seq{grid-area:1/1;text-align:center}
+  .p-copy h2,.p-copy .lede{margin-inline:auto}
   .p-say > *,.p-seq{opacity:0}
-  .p-seq{margin-top:0}
+  .p-seq{margin-top:0;justify-self:center;width:100%}
+  .p-clock{justify-content:center}
 }
 /* short phones (an SE in Safari has ~550px): the story a size smaller, so the missed call
    at the end still fits on screen */
@@ -672,7 +672,7 @@ p{margin:0}
     </div>
 
     <div class="p-seq" id="gone">
-      <span class="p-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>Without Ormy</span>
+      <span class="p-tag">What usually happens</span>
       <div class="p-clock" id="pClock" aria-hidden="true"><span id="gClock">9:00</span><small id="gAmPm">AM</small></div>
 
       <div class="p-caps">
@@ -1083,6 +1083,7 @@ p{margin:0}
     $$('.nstack').forEach(fitPile);
     drawMark();
     fitLadder();
+    fitProblem();
   }
 
   function showNote(n, t, y, extra){
@@ -1225,26 +1226,33 @@ p{margin:0}
     $('path', mark).setAttribute('d', CIRCLE.replace(/-?\d+(\.\d+)?/g, function(n){ return (+n * (k++ % 2 ? sy : sx)).toFixed(1); }));
   }
 
-  // Phones: the section in stages, each gone before the next arrives: [el, in from, in by,
-  // out from, out by], as a share of the section's scroll. The story itself then plays out
-  // over the rest.
-  var STAGES = [[ptitle, -1, 0, .1, .14], [$('.p-say h2', problem), .16, .2, .4, .44],
-    [$('.p-say .lede', problem), .21, .25, .4, .44], [$('#gone'), .46, .5, 2, 3]];
+  // Phones: the section in stages, centred. "The problem" starts alone in the middle; it
+  // moves up to make room, and the headline and its line arrive under it. Then that whole
+  // block goes, and the story plays out over the rest of the section in the same spot.
+  var pCopy = $('.p-copy', problem), pH2 = $('.p-say h2', problem), pLede = $('.p-say .lede', problem), pSeq = $('#gone');
+  // While "The problem" is alone it sits half of what's coming below its place, so it starts
+  // in the middle, and the finished block is in the middle too.
+  function fitProblem(){ L.titleDrop = (pCopy.offsetHeight - ptitle.offsetHeight) / 2; }
+  // Hidden, not just see-through, once it's gone: Safari could leave faded text showing.
+  function turn(el, o, y){
+    el.style.opacity = o;
+    el.style.transform = 'translateY(' + y.toFixed(1) + 'px)';
+    el.style.visibility = o > .001 ? 'visible' : 'hidden';
+  }
   function renderGone(){
     var r = problem.getBoundingClientRect();
     ptitle.classList.toggle('drawn', r.top < innerHeight * .45);
     var g = clamp(-r.top / (problem.offsetHeight - pStage.offsetHeight), 0, 1);
 
-    STAGES.forEach(function(st){
-      var el = st[0];
-      if (!L.narrow) { el.style.opacity = el.style.transform = el.style.visibility = ''; return; }
-      var a = out(seg(g, st[1], st[2])), z = seg(g, st[3], st[4]), o = a * (1 - z);
-      el.style.opacity = o;
-      el.style.transform = 'translateY(' + ((1 - a) * 18 - z * 18).toFixed(1) + 'px)';
-      // Hidden, not just see-through, once it's gone: Safari could leave faded text showing.
-      el.style.visibility = o > .001 ? 'visible' : 'hidden';
-    });
-    if (L.narrow) g = seg(g, .5, 1);
+    if (L.narrow) {
+      var up = inOut(seg(g, .1, .15)), headIn = out(seg(g, .15, .19)), ledeIn = out(seg(g, .19, .23));
+      var keep = 1 - seg(g, .4, .44), lift = (keep - 1) * 18, storyIn = out(seg(g, .46, .5));
+      turn(ptitle, keep, (1 - up) * L.titleDrop + lift);
+      turn(pH2, headIn * keep, (1 - headIn) * 14 + lift);
+      turn(pLede, ledeIn * keep, (1 - ledeIn) * 14 + lift);
+      turn(pSeq, storyIn, (1 - storyIn) * 18);
+      g = seg(g, .5, 1);
+    } else [ptitle, pH2, pLede, pSeq].forEach(function(el){ el.style.opacity = el.style.transform = el.style.visibility = ''; });
 
     // 9:00 AM: one ordinary reminder. It has to be noticed, so it lands like a real banner
     // (a drop, a buzz, a ring) and plays in full however fast you scroll. Then it's swiped away.
