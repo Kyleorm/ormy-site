@@ -135,6 +135,8 @@ p{margin:0}
    the words change with the scroll.
    ========================================================== */
 .story{position:relative;height:580vh;height:580svh}
+/* phones: longer, because each caption gets its own turn before the phone moves on */
+@media (max-width:959px){.story{height:660vh;height:660svh}}
 .stage{position:sticky;top:0;height:100vh;height:100lvh;overflow:hidden;
   --pw:min(340px,80vw);
   --s:calc(var(--pw) * .932 / 430);   /* one iOS point, on this phone */
@@ -281,14 +283,17 @@ p{margin:0}
 .p-ghost{position:absolute;inset:0;display:grid;place-items:center;border-radius:calc(24 * var(--k));border:1.5px dashed #DCD6CF;font:700 13px var(--body);color:var(--muted);opacity:0}
 .p-late{position:absolute;left:0;right:0;top:0;display:grid;gap:10px}
 .p-late .ntf{opacity:0}
-/* Phones: words first, then the story. The words get the screen to themselves; scroll on
-   and they make way, and the dentist story plays on its own in the same spot. Reading and
-   watching never compete (Kyle's dyslexic friend found the two at once too much). */
+/* Phones: in stages, one thing on screen at a time. "The problem" on its own; then the
+   headline, with the line under it arriving just after; then the dentist story. All three
+   share one spot, and each is gone before the next arrives (Kyle's dyslexic friend found
+   reading and watching at once too much). */
 @media (max-width:899px){
-  .problem{height:360vh;height:360lvh}
-  .p-stage > .wrap{display:grid;align-items:center}
-  .p-copy,.p-seq{grid-area:1/1}
-  .p-seq{margin-top:0;opacity:0}
+  .problem{height:440vh;height:440lvh}
+  .p-stage > .wrap,.p-copy{display:grid;align-items:center}
+  .p-copy,.p-seq,.ptitle,.p-say{grid-area:1/1}
+  .p-copy h2{margin-top:0}
+  .p-say > *,.p-seq{opacity:0}
+  .p-seq{margin-top:0}
 }
 /* short phones (an SE in Safari has ~550px): the story a size smaller, so the missed call
    at the end still fits on screen */
@@ -315,7 +320,6 @@ p{margin:0}
 .lane{display:flex;gap:12px;width:max-content;animation:drift 48s linear infinite}
 .lane.rev{animation-duration:56s;animation-direction:reverse}
 @keyframes drift{to{transform:translateX(-50%)}}
-.nap.still .lane{animation-play-state:paused}   /* phones: still once they're crossed out */
 .kind{position:relative;flex:none;display:flex;align-items:center;gap:11px;height:62px;padding:0 20px 0 11px;border-radius:18px;background:#fff;box-shadow:0 0 0 1px var(--line),0 10px 22px -14px rgba(26,23,20,.28)}
 .kind .ic{width:40px;height:40px;flex:none;border-radius:10px;filter:saturate(.8)}
 .kind span{font:700 15.5px var(--body);color:#8C847D;white-space:nowrap}
@@ -661,8 +665,10 @@ p{margin:0}
   <div class="wrap">
     <div class="p-copy">
       <div class="ptitle" id="ptitle"><span class="pt-words">The <span class="pt-key">problem<svg class="pt-mark" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1"/></svg></span></span></div>
-      <h2>Other reminder apps tell you once.<br>Then it's <em>too late</em>.</h2>
-      <p class="lede">You knew about the dentist. You knew it was Mum's birthday. Your brain just didn't bring it up in time.</p>
+      <div class="p-say">
+        <h2>Other reminder apps tell you once.<br>Then it's <em>too late</em>.</h2>
+        <p class="lede">You knew about the dentist. You knew it was Mum's birthday. Your brain just didn't bring it up in time.</p>
+      </div>
     </div>
 
     <div class="p-seq" id="gone">
@@ -1046,6 +1052,7 @@ p{margin:0}
   function measure(){
     var wide = innerWidth >= 960;
     L.narrow = innerWidth < 900;   // phones: words first, then the animation, and nothing loops
+    L.stack = !wide;               // the story's captions sit above the phone, so they take turns
     L.phoneH = device.offsetHeight;
     L.y0 = intro.offsetTop + intro.offsetHeight + (wide ? 44 : 30);
     if (wide) {
@@ -1095,9 +1102,26 @@ p{margin:0}
     setTimeout(function(){ seeking = false; }, 120);
   }
 
+  // When the captions sit above the phone (phones), they take turns with it: each shows
+  // while the phone is still and is gone before anything on it moves. The phone's story
+  // runs on its own clock `p`, which holds still while a caption is up. These are
+  // [scroll, story] pairs, joined by straight lines.
+  var WARP = [[0, 0], [.16, .24], [.49, .4], [.66, .68], [.83, .69], [1, 1]];
+  function warp(s){
+    for (var i = 1; i < WARP.length; i++) if (s <= WARP[i][0]) {
+      var a = WARP[i - 1], b = WARP[i];
+      return a[1] + (b[1] - a[1]) * (s - a[0]) / (b[0] - a[0]);
+    }
+    return 1;
+  }
+  // Each caption's [in from, in by, out from, out by], as a share of the scroll.
+  var CAPS_WIDE = [[.2, .245, .36, .39], [.39, .43, .7, .73], [.73, .77, 2, 3]];
+  var CAPS_STACK = [[.18, .21, .29, .32], [.34, .37, .45, .48], [.68, .71, .79, .82]];
+
   function renderStory(){
     var r = story.getBoundingClientRect();
-    var p = clamp(-r.top / L.total, 0, 1);
+    var s = clamp(-r.top / L.total, 0, 1);
+    var p = L.stack ? warp(s) : s;
 
     // 1. The phone rises the whole time the words are being pulled in, and a bit after.
     var devY = lerp(L.y0, L.y1, inOut(seg(p, 0, .24)));
@@ -1140,8 +1164,8 @@ p{margin:0}
     off.style.visibility = wake >= 1 ? 'hidden' : 'visible';
 
     // 3. The words.
-    [[.2, .245, .36, .39], [.39, .43, .7, .73], [.73, .77, 2, 3]].forEach(function(w, i){
-      var a = out(seg(p, w[0], w[1])), z = seg(p, w[2], w[3]);
+    (L.stack ? CAPS_STACK : CAPS_WIDE).forEach(function(w, i){
+      var a = out(seg(s, w[0], w[1])), z = seg(s, w[2], w[3]);
       var o = a * (1 - z);
       caps[i].style.opacity = o;
       caps[i].style.visibility = o > .001 ? 'visible' : 'hidden';
@@ -1201,24 +1225,26 @@ p{margin:0}
     $('path', mark).setAttribute('d', CIRCLE.replace(/-?\d+(\.\d+)?/g, function(n){ return (+n * (k++ % 2 ? sy : sx)).toFixed(1); }));
   }
 
-  var pCopy = $('.p-copy', problem), pSeq = $('#gone');
+  // Phones: the section in stages, each gone before the next arrives: [el, in from, in by,
+  // out from, out by], as a share of the section's scroll. The story itself then plays out
+  // over the rest.
+  var STAGES = [[ptitle, -1, 0, .1, .14], [$('.p-say h2', problem), .16, .2, .4, .44],
+    [$('.p-say .lede', problem), .21, .25, .4, .44], [$('#gone'), .46, .5, 2, 3]];
   function renderGone(){
     var r = problem.getBoundingClientRect();
     ptitle.classList.toggle('drawn', r.top < innerHeight * .45);
     var g = clamp(-r.top / (problem.offsetHeight - pStage.offsetHeight), 0, 1);
 
-    // Phones: the words come first, on their own. Scroll on and they make way, the story
-    // takes their place, and it plays out over the rest of the section.
-    if (L.narrow) {
-      var w = seg(g, .16, .24), s = seg(g, .2, .28);
-      pCopy.style.opacity = 1 - w;
-      pCopy.style.transform = 'translateY(' + (-w * 28).toFixed(1) + 'px)';
-      pSeq.style.opacity = s;
-      pSeq.style.transform = 'translateY(' + ((1 - out(s)) * 24).toFixed(1) + 'px)';
-      g = seg(g, .28, 1);
-    } else {
-      pCopy.style.opacity = pCopy.style.transform = pSeq.style.opacity = pSeq.style.transform = '';
-    }
+    STAGES.forEach(function(st){
+      var el = st[0];
+      if (!L.narrow) { el.style.opacity = el.style.transform = el.style.visibility = ''; return; }
+      var a = out(seg(g, st[1], st[2])), z = seg(g, st[3], st[4]), o = a * (1 - z);
+      el.style.opacity = o;
+      el.style.transform = 'translateY(' + ((1 - a) * 18 - z * 18).toFixed(1) + 'px)';
+      // Hidden, not just see-through, once it's gone: Safari could leave faded text showing.
+      el.style.visibility = o > .001 ? 'visible' : 'hidden';
+    });
+    if (L.narrow) g = seg(g, .5, 1);
 
     // 9:00 AM: one ordinary reminder. It has to be noticed, so it lands like a real banner
     // (a drop, a buzz, a ring) and plays in full however fast you scroll. Then it's swiped away.
@@ -1272,13 +1298,8 @@ p{margin:0}
   lane($('#lane1'), [0, 1, 2, 3, 4, 5, 6, 7]);
   lane($('#lane2'), [5, 7, 0, 4, 2, 6, 1, 3]);
   var nap = $('#nap'), lanes = $('.lanes', nap);
-  // Crossed out once the rows are actually on screen. On phones they then stop drifting:
-  // one thing moving at a time.
-  function checkNap(){
-    if (nap.classList.contains('seen') || lanes.getBoundingClientRect().top > innerHeight * .72) return;
-    nap.classList.add('seen');
-    if (L.narrow) setTimeout(function(){ nap.classList.add('still'); }, reduce ? 0 : 2400);
-  }
+  // Crossed out once the rows are actually on screen, not when the heading arrives.
+  function checkNap(){ if (lanes.getBoundingClientRect().top < innerHeight * .72) nap.classList.add('seen'); }
 
   /* ---------------- the day ---------------- */
   var moments = $$('.moment');
