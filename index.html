@@ -266,7 +266,14 @@ p{margin:0}
 .p-clock.late,.p-clock.late small{color:#E0302A}
 .p-caps{position:relative;height:38px;margin-top:10px}
 .p-cap{position:absolute;left:0;right:0;top:0;font:700 17.5px/1.35 var(--body);color:var(--text-2);opacity:0}
-.p-cap.end{top:-4px;font:700 clamp(28px,3vw,34px)/1.1 var(--display);font-variation-settings:'opsz' 72;letter-spacing:-.02em;color:var(--head)}
+/* "That's how you find out.": the punchline, bigger than the heading above it, with the
+   highlighter swipe Kyle tried on "The problem" drawn behind it as it lands */
+.p-cap.end{top:-6px;font:700 clamp(34px,3.4vw,40px)/1.1 var(--display);font-variation-settings:'opsz' 72;letter-spacing:-.02em;color:var(--head)}
+@media (max-width:899px){.p-cap.end{font-size:min(36px,8.4vw)}}   /* as big as fits on one line */
+.p-hl{position:relative;z-index:0;display:inline-block;white-space:nowrap}
+.hl-mark{position:absolute;z-index:-1;left:-3%;bottom:-.04em;width:106%;height:.55em;pointer-events:none;overflow:visible}
+.hl-mark path{fill:none;stroke:#FFC4A8;stroke-width:.42em;stroke-linecap:round;stroke-dasharray:1 1.2;stroke-dashoffset:1.1;transition:stroke-dashoffset .8s cubic-bezier(.6,0,.2,1) .15s}
+.p-cap.end.lit .hl-mark path{stroke-dashoffset:0}
 .p-notes{--k:.92px;position:relative;height:calc(186 * var(--k));margin-top:14px}
 .p-slot{position:relative}
 /* the ordinary reminder lands like a real banner: drops in, buzzes, and an orange ring
@@ -680,7 +687,7 @@ p{margin:0}
         <p class="p-cap">A normal reminder fires once.</p>
         <p class="p-cap">You swipe it away. It's gone.</p>
         <p class="p-cap">Then nothing. For hours.</p>
-        <p class="p-cap end">That's how you find out.</p>
+        <p class="p-cap end"><span class="p-hl">That's how you find out.<svg class="hl-mark" preserveAspectRatio="none" aria-hidden="true"><path pathLength="1"/></svg></span></p>
       </div>
 
       <div class="p-notes">
@@ -1215,17 +1222,20 @@ p{margin:0}
   var problem = $('#problem'), pStage = $('#pStage'), pClock = $('#pClock');
   var gRem = $('#gRem'), remPop = $('#remPop'), gGhost = $('#gGhost'), gClock = $('#gClock'), gAmPm = $('#gAmPm');
   var gCall = $('#gCall'), gMsg = $('#gMsg'), pCaps = $$('.p-cap');
-  // "The problem": the pen circle is drawn in a 200×80 box and stretched to the word's real
-  // size in pixels, so the line keeps an even weight however wide the word is.
-  var ptitle = $('#ptitle'), mark = $('.pt-mark', ptitle);
+  // The hand-drawn marks: the pen circle round "problem" (drawn in a 200×80 box) and the
+  // highlighter swipe behind "That's how you find out." (200×40). Each is stretched to its
+  // words' real size in pixels, so the line keeps an even weight however wide they are.
+  var ptitle = $('#ptitle'), mark = $('.pt-mark', ptitle), endCap = pCaps[3], hlMark = $('.hl-mark', endCap);
   var CIRCLE = 'M150 10C104 -1 34 5 12 28C-6 47 26 73 98 75C162 77 196 60 192 36C189 18 164 8 118 7';
-  function drawMark(){
-    var box = mark.getBoundingClientRect();
+  var SWIPE = 'M6 24C52 17 122 22 194 14';
+  function fitMark(svg, d, w, h){
+    var box = svg.getBoundingClientRect();
     if (!box.width || !box.height) return;
-    var sx = box.width / 200, sy = box.height / 80, k = 0;
-    mark.setAttribute('viewBox', '0 0 ' + box.width.toFixed(1) + ' ' + box.height.toFixed(1));
-    $('path', mark).setAttribute('d', CIRCLE.replace(/-?\d+(\.\d+)?/g, function(n){ return (+n * (k++ % 2 ? sy : sx)).toFixed(1); }));
+    var sx = box.width / w, sy = box.height / h, k = 0;
+    svg.setAttribute('viewBox', '0 0 ' + box.width.toFixed(1) + ' ' + box.height.toFixed(1));
+    $('path', svg).setAttribute('d', d.replace(/-?\d+(\.\d+)?/g, function(n){ return (+n * (k++ % 2 ? sy : sx)).toFixed(1); }));
   }
+  function drawMark(){ fitMark(mark, CIRCLE, 200, 80); fitMark(hlMark, SWIPE, 200, 40); }
 
   // Phones: the section in stages, centred. "The problem" starts alone in the middle; it
   // moves up to make room, and the headline and its line arrive under it. Then that whole
@@ -1283,6 +1293,8 @@ p{margin:0}
       pCaps[i].style.opacity = i1 * (1 - o1);
       pCaps[i].style.transform = 'translateY(' + ((1 - i1) * 10 - o1 * 10) + 'px)';
     });
+    // The punchline's highlighter is drawn once it has landed, and wiped if you scroll back.
+    endCap.classList.toggle('lit', seg(g, .88, .94) > .6);
   }
 
   /* ---------------- not a planner ---------------- */
