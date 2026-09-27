@@ -22,6 +22,22 @@
 <meta name="twitter:image" content="https://ormy.turbolt.co.uk/og.png">
 <!-- Where the signup boxes send emails: Convex's /waitlist route -->
 <meta name="waitlist-endpoint" content="https://standing-emu-641.convex.site/waitlist">
+<!-- Meta Pixel: lets Meta ads count waitlist sign-ups (PageView on load, Lead on join).
+     It loads ONLY after the visitor taps "Accept" on the banner at the bottom of the page,
+     and only on the live site. -->
+<script>
+// The real site. Anywhere else (this computer, a preview link) is a copy: it never
+// reports to Meta and never writes to the live waitlist. (If the site moves to a new
+// domain, change it here as well as in the canonical and og: URLs.)
+window.ORMY_LIVE = location.hostname === 'ormy.turbolt.co.uk';
+window.ormyLoadPixel = function(){
+if (window.fbq || !window.ORMY_LIVE) return;
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '960843731947725');
+fbq('track', 'PageView');
+};
+try { if (localStorage.getItem('ormy-consent') === 'yes') window.ormyLoadPixel(); } catch (e) {}
+</script>
 <!-- Ormy's fonts (Fraunces and Nunito, both SIL Open Font License), served from this site
      rather than Google's, so no visitor's browser talks to anyone but us. Latin subsets only. -->
 <link rel="preload" href="fonts/fraunces-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
@@ -56,7 +72,7 @@
   --ink:#1A1714;
   --head:#221D19;
   --text-2:#6B635C;
-  --muted:#A29A92;
+  --muted:#6D6A66;         /* the app's darker grey (Kyle picked "B1"): 5.4:1 on white, was 2.6 */
   --line:rgba(26,23,20,.08);
   --hot:#FF5A1F;
   --hot-2:#FF8452;
@@ -236,7 +252,7 @@ p{margin:0}
 .pt-mark path{fill:none;stroke:#D9391B;stroke-width:.056em;stroke-linecap:round;stroke-dasharray:1 1.2;stroke-dashoffset:1.1;transition:stroke-dashoffset 1s cubic-bezier(.6,0,.2,1) .2s}
 .ptitle.drawn .pt-mark path{stroke-dashoffset:0}
 .problem h2 em{background-image:linear-gradient(100deg,#F2553A 0%,#C8231C 100%)}
-.p-tag{display:inline-flex;align-items:center;gap:7px;margin-bottom:12px;font:800 11.5px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:#958D86}
+.p-tag{display:inline-flex;align-items:center;gap:7px;margin-bottom:12px;font:800 11.5px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .p-tag svg{width:13px;height:13px}
 .p-stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;display:flex;align-items:center;padding-top:calc(70px + env(safe-area-inset-top,0px))}
 .p-stage > .wrap{width:100%}
@@ -265,18 +281,20 @@ p{margin:0}
 .p-ghost{position:absolute;inset:0;display:grid;place-items:center;border-radius:calc(24 * var(--k));border:1.5px dashed #DCD6CF;font:700 13px var(--body);color:var(--muted);opacity:0}
 .p-late{position:absolute;left:0;right:0;top:0;display:grid;gap:10px}
 .p-late .ntf{opacity:0}
-/* short phones (an SE in Safari has ~550px): the same section, a size smaller, so the
-   missed call at the end still fits on screen */
-@media (max-width:959px) and (max-height:760px){
-  .ptitle{font-size:46px}
-  .p-copy h2{font-size:29px}
-  .p-copy .lede{font-size:15px;margin-top:10px}
-  .p-seq{margin-top:18px}
+/* Phones: words first, then the story. The words get the screen to themselves; scroll on
+   and they make way, and the dentist story plays on its own in the same spot. Reading and
+   watching never compete (Kyle's dyslexic friend found the two at once too much). */
+@media (max-width:899px){
+  .problem{height:360vh;height:360lvh}
+  .p-stage > .wrap{display:grid;align-items:center}
+  .p-copy,.p-seq{grid-area:1/1}
+  .p-seq{margin-top:0;opacity:0}
+}
+/* short phones (an SE in Safari has ~550px): the story a size smaller, so the missed call
+   at the end still fits on screen */
+@media (max-width:899px) and (max-height:760px){
   .p-clock{font-size:56px}
   .p-notes{--k:.86px}
-}
-@media (max-width:959px) and (max-height:620px){
-  .p-copy .lede{display:none}
 }
 @media (min-width:900px){
   .p-stage{padding-top:40px}
@@ -297,6 +315,7 @@ p{margin:0}
 .lane{display:flex;gap:12px;width:max-content;animation:drift 48s linear infinite}
 .lane.rev{animation-duration:56s;animation-direction:reverse}
 @keyframes drift{to{transform:translateX(-50%)}}
+.nap.still .lane{animation-play-state:paused}   /* phones: still once they're crossed out */
 .kind{position:relative;flex:none;display:flex;align-items:center;gap:11px;height:62px;padding:0 20px 0 11px;border-radius:18px;background:#fff;box-shadow:0 0 0 1px var(--line),0 10px 22px -14px rgba(26,23,20,.28)}
 .kind .ic{width:40px;height:40px;flex:none;border-radius:10px;filter:saturate(.8)}
 .kind span{font:700 15.5px var(--body);color:#8C847D;white-space:nowrap}
@@ -349,7 +368,8 @@ p{margin:0}
 .card{margin-top:14px;border-radius:26px;background:var(--card);padding:24px 22px 22px;display:grid;gap:20px}
 .card p{margin-top:10px;font:500 16px/1.6 var(--body);color:var(--text-2)}
 .card .note{margin-top:8px;font:700 13px var(--body);color:var(--muted)}
-.ui{display:grid;justify-items:center;gap:12px;padding:6px 0 4px}
+.ui{display:grid;justify-items:center;gap:12px;padding:6px 0 4px;transition:opacity .35s}
+.ui.rewind{opacity:0}
 .ui > img{width:100%;max-width:340px;filter:drop-shadow(0 12px 20px rgba(26,23,20,.12))}
 .ui .ntf{--k:.8px;width:100%;max-width:330px;background:#fff}
 .ui .ui-note{min-height:20px;font:800 14px var(--body);color:#4A9163;opacity:0;transform:translateY(6px);transition:opacity .4s,transform .4s}
@@ -375,7 +395,7 @@ p{margin:0}
 .rc-txt{flex:1;min-width:0}
 .rc-txt b{position:relative;display:inline-block;max-width:100%;font:700 calc(17 * var(--u))/1.25 var(--body);color:#141210;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;vertical-align:top;transition:color .4s}
 .rc-txt b::after{content:"";position:absolute;left:0;right:0;top:56%;height:calc(1.7 * var(--u));background:#3B3835;transform:scaleX(0);transform-origin:left;transition:transform .4s ease .1s}
-.rc-txt small{display:block;margin-top:calc(2 * var(--u));font:600 calc(13.5 * var(--u))/1.3 var(--body);color:#91908E}
+.rc-txt small{display:block;margin-top:calc(2 * var(--u));font:600 calc(13.5 * var(--u))/1.3 var(--body);color:var(--muted)}
 .rc-grip{display:grid;gap:calc(4 * var(--u));flex:none}
 .rc-grip i{display:block;width:calc(17 * var(--u));height:calc(2.2 * var(--u));border-radius:2px;background:#A7A19B}
 .rc-foot{display:flex;align-items:center;gap:calc(8 * var(--u));max-height:calc(40 * var(--u));overflow:hidden;padding:calc(7 * var(--u)) calc(18 * var(--u)) calc(8 * var(--u));font:700 calc(13.5 * var(--u))/1.3 var(--body);color:#C8651F;transition:max-height .45s ease,padding .45s ease,opacity .3s}
@@ -446,7 +466,7 @@ p{margin:0}
 .drag{--hr:74px;--gut:38px;--u:.74px;position:relative;width:100%;max-width:340px;height:calc(var(--hr) * 2.75 + 30px)}
 @media (min-width:900px){.drag{--u:.82px}}
 .dg-rail{position:absolute;left:calc(var(--gut) - 12px);top:10px;bottom:6px;width:2px;border-radius:2px;background:repeating-linear-gradient(#F7B79A 0 6px,transparent 6px 10px)}
-.dg-h{position:absolute;left:0;width:20px;top:calc(4px + var(--y) * var(--hr));text-align:right;font:700 11px/1.1 var(--body);color:#A29A92}
+.dg-h{position:absolute;left:0;width:20px;top:calc(4px + var(--y) * var(--hr));text-align:right;font:700 11px/1.1 var(--body);color:var(--muted)}
 .dg-h small{display:block;font-size:8.5px;letter-spacing:.04em}
 .dg-ghost{position:absolute;left:var(--gut);right:0;height:calc(72 * var(--u));top:calc(10px + 2.25 * var(--hr) - 36 * var(--u));border-radius:calc(20 * var(--u));border:1.5px dashed #E3C3B1;display:grid;place-items:center;font:700 12.5px var(--body);color:#C99A80;opacity:0;transition:opacity .4s}
 .drag.lifted .dg-ghost,.drag.dropped .dg-ghost{opacity:1}
@@ -471,6 +491,8 @@ p{margin:0}
 .alarm-s.ringing .as-txt{animation:shimmer 2.4s linear infinite}
 @keyframes buzz{0%,28%,100%{transform:none}2%{transform:translateX(-3px) rotate(-.7deg)}4%{transform:translateX(3px) rotate(.7deg)}6%{transform:translateX(-3px) rotate(-.7deg)}8%{transform:translateX(3px) rotate(.7deg)}10%{transform:translateX(-2px)}12%{transform:translateX(2px)}14%{transform:none}16%{transform:translateX(-3px) rotate(-.7deg)}18%{transform:translateX(3px) rotate(.7deg)}20%{transform:translateX(-3px) rotate(-.7deg)}22%{transform:translateX(3px) rotate(.7deg)}24%{transform:translateX(-2px)}26%{transform:translateX(2px)}}
 @keyframes shimmer{to{background-position:-50% 0}}
+/* phones: it rings twice, then holds still, rather than buzzing beside words you're reading */
+@media (max-width:899px){.alarm-s.ringing,.alarm-s.ringing .as-txt{animation-iteration-count:2}}
 
 /* founder, at the end of the day */
 .founder{margin-top:14px;border-radius:26px;background:var(--card);padding:26px 24px;display:grid;gap:16px}
@@ -480,6 +502,39 @@ p{margin:0}
 .founder .who span{font:600 14px var(--body);color:var(--muted)}
 .founder blockquote{margin:0;font:700 clamp(25px,3vw,32px)/1.15 var(--display);font-variation-settings:'opsz' 72;letter-spacing:-.02em;color:var(--head);text-wrap:balance}
 .founder p{font:500 16px/1.6 var(--body);color:var(--text-2);max-width:46ch}
+
+/* ==========================================================
+   WHAT IF I IGNORE IT — the hour after a reminder is due, as it
+   lands on your phone. Each alert lands as the scroll reaches it.
+   ========================================================== */
+.hour-copy h2{margin-top:22px}
+.hour-copy .lede{margin-top:16px;max-width:26em}
+.ladder{position:relative;max-width:400px;margin:40px 0 0;padding:0 0 0 34px}
+.ladder ol{margin:0;padding:0;list-style:none}
+.ladder .rail{left:7px;top:9px;bottom:0}
+.rung{position:relative;padding-bottom:22px}
+.rung::before{content:"";position:absolute;left:-33px;top:2px;z-index:1;width:15px;height:15px;border-radius:50%;background:#fff;box-shadow:inset 0 0 0 3px #E6E0DA;transition:box-shadow .3s,background .3s}
+.rung.on::before{background:var(--hot);box-shadow:inset 0 0 0 3px var(--hot),0 0 0 5px rgba(255,90,31,.14)}
+.at{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 10px;font:600 14px/1.35 var(--body);color:var(--text-2)}
+.at b{font-weight:800;font-variant-numeric:tabular-nums;color:var(--muted);transition:color .3s}
+.rung.on .at b{color:var(--hot)}
+/* not reached yet: there, but faint. Reached: it lands and buzzes, like the real thing */
+.rung .ntf{--k:.8px;margin-top:9px;background:#fff;-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:0 0 0 .5px rgba(0,0,0,.05),0 12px 24px -12px rgba(26,23,20,.3);opacity:.3;transform:scale(.97);transform-origin:left center;transition:opacity .35s,transform .5s cubic-bezier(.2,.9,.25,1.2)}
+.rung.on .ntf{opacity:1;transform:none;animation:rungBuzz .45s ease-in-out .12s}
+@keyframes rungBuzz{0%,100%{transform:none}20%{transform:translateX(-4px) rotate(-.8deg)}40%{transform:translateX(4px) rotate(.8deg)}60%{transform:translateX(-2px)}80%{transform:translateX(2px)}}
+.rung .alarm-s{margin-top:10px;opacity:.3;transition:opacity .35s}
+.rung.on .alarm-s{opacity:1}
+.rung .fine{margin-top:10px;font:700 13px/1.4 var(--body);color:var(--text-2)}
+.rung.end{padding-bottom:0}
+.rung.end h3{margin-top:8px}
+.rung.end p{margin-top:8px;font:500 16px/1.6 var(--body);color:var(--text-2);max-width:30em}
+@media (prefers-reduced-motion:reduce){.rung.on .ntf{animation:none}}
+@media (min-width:900px){
+  .hour-in{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,460px);gap:72px;align-items:start}
+  .hour-copy{position:sticky;top:130px}
+  .ladder{max-width:460px;margin-top:6px}
+  .rung .ntf{--k:.95px}
+}
 
 /* faq */
 .faq{max-width:720px}
@@ -518,7 +573,8 @@ p{margin:0}
 .foot .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px;padding-block:28px calc(34px + env(safe-area-inset-bottom,0px));font:600 14px var(--body);color:var(--muted)}
 .foot nav{display:flex;gap:20px}
 .foot nav a{text-decoration:none}
-.foot nav a:hover{color:var(--ink)}
+.foot nav a:hover,.foot nav button:hover{color:var(--ink)}
+.foot nav button{padding:0;border:0;background:none;font:inherit;color:inherit;cursor:pointer}
 
 /* picture/video mode only */
 .zoomed{scrollbar-width:none}
@@ -799,11 +855,55 @@ p{margin:0}
   </div>
 </section>
 
+<!-- ================= WHAT IF I IGNORE IT ================= -->
+<!-- The real wording and timing from convex/reminderNotifications.ts: a nudge every 10
+     minutes (the default; 5 and 20 are the other choices) for one hour. The last one says
+     FINAL NUDGE, and the alarm (opt-in, iOS 26+) rings when the hour is up. -->
+<section class="sec" id="ignore" aria-labelledby="hourH">
+  <div class="wrap hour-in">
+    <div class="hour-copy" data-rise>
+      <span class="label">The whole hour</span>
+      <h2 id="hourH">What if I <em>ignore</em> it?</h2>
+      <p class="lede">Here's the hour after a reminder is due, exactly as it lands on your phone. Tick it off at any point and it all stops.</p>
+    </div>
+
+    <div class="ladder" id="ladder">
+      <div class="rail" aria-hidden="true"><i id="hourFill"></i></div>
+      <ol>
+      <li class="rung"><p class="at"><b>6:30 PM</b>It's due. You swipe it away.</p>
+        <div class="ntf"><img src="img/icon.png" alt=""><div><div class="top"><b>TIME SENSITIVE</b><span>now</span></div><div class="t">DUE NOW — Ring Steven</div><div class="s">Due 6:30pm</div></div></div></li>
+      <li class="rung"><p class="at"><b>6:40 PM</b>Back 10 minutes later. You pick 5, 10 or 20.</p>
+        <div class="ntf"><img src="img/icon.png" alt=""><div><div class="top"><b>TIME SENSITIVE</b><span>now</span></div><div class="t">NUDGE 1 — Ring Steven</div><div class="s">Due 6:30pm · 10 minutes ago</div></div></div></li>
+      <li class="rung"><p class="at"><b>6:50 PM</b></p>
+        <div class="ntf"><img src="img/icon.png" alt=""><div><div class="top"><b>TIME SENSITIVE</b><span>now</span></div><div class="t">NUDGE 2 — Ring Steven</div><div class="s">Due 6:30pm · 20 minutes ago</div></div></div></li>
+      <li class="rung"><p class="at"><b>7:00 PM</b></p>
+        <div class="ntf"><img src="img/icon.png" alt=""><div><div class="top"><b>TIME SENSITIVE</b><span>now</span></div><div class="t">NUDGE 3 — Ring Steven</div><div class="s">Due 6:30pm · 30 minutes ago</div></div></div></li>
+      <li class="rung"><p class="at"><b>7:10 PM</b></p>
+        <div class="ntf"><img src="img/icon.png" alt=""><div><div class="top"><b>TIME SENSITIVE</b><span>now</span></div><div class="t">NUDGE 4 — Ring Steven</div><div class="s">Due 6:30pm · 40 minutes ago</div></div></div></li>
+      <li class="rung"><p class="at"><b>7:20 PM</b>The last nudge, and it says so.</p>
+        <div class="ntf"><img src="img/icon.png" alt=""><div><div class="top"><b>TIME SENSITIVE</b><span>now</span></div><div class="t">FINAL NUDGE — Ring Steven</div><div class="s">Due 6:30pm · 50 minutes ago</div></div></div></li>
+      <li class="rung"><p class="at"><b>7:30 PM</b>Then a real alarm, through silent mode and Do Not Disturb.</p>
+        <div class="alarm-s" aria-label="Ormy's alarm ringing: Ring Steven, 19:30, slide to stop">
+          <div class="as-top"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5.2 3.1 2.6 5.3a1 1 0 0 0 1.3 1.5l2.6-2.2a1 1 0 0 0-1.3-1.5Zm13.6 0a1 1 0 0 0-1.3 1.5l2.6 2.2a1 1 0 0 0 1.3-1.5l-2.6-2.2ZM12 4.8a8.2 8.2 0 0 0-5.6 14.2l-1.3 1.4a.9.9 0 1 0 1.3 1.3l1.5-1.5a8.2 8.2 0 0 0 8.2 0l1.5 1.5a.9.9 0 1 0 1.3-1.3l-1.3-1.4A8.2 8.2 0 0 0 12 4.8Zm.9 3.7v4.3l2.6 2.6a.9.9 0 1 1-1.3 1.3l-2.8-2.9a.9.9 0 0 1-.3-.6V8.5a.9.9 0 1 1 1.8 0Z"/></svg>Ring Steven</div>
+          <div class="as-time">19:30</div>
+          <div class="as-app">Ormy</div>
+          <div class="as-slide"><span class="as-knob"><i></i></span><span class="as-txt">slide to stop</span></div>
+        </div>
+        <p class="fine">Only if you switch it on for that reminder. iPhones with iOS 26 or later.</p></li>
+      <li class="rung end"><p class="at"><b>Then</b></p>
+        <h3>Ormy goes quiet.</h3>
+        <p>No calls, no texts, no telling-off. Ring Steven stays on your list until you tick it off.</p></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
 <!-- ================= FAQ ================= -->
-<section class="sec">
+<section class="sec" id="faq">
   <div class="wrap faq">
     <div data-rise><span class="label">Questions</span><h2>Good to know</h2></div>
     <details><summary>When can I get it?</summary><p>Ormy is coming to iPhone soon. Join the waitlist and we'll email you the day it's on the App Store.</p></details>
+    <details><summary>Does it call or text me?</summary><p>No. It all happens on your iPhone: a nudge every 10 minutes for an hour, then a real alarm if you've switched one on for that reminder.</p></details>
     <details><summary>Is it only for people with ADHD?</summary><p>No. It's built by someone with ADHD, for anyone whose brain drops the important stuff.</p></details>
     <details><summary>Does it use AI?</summary><p>Only if you switch it on. When it's on, Ormy's AI sees a reminder's title and how far away it is. Nothing else.</p></details>
     <details><summary>Is it on Android?</summary><p>Not yet. Ormy is iPhone only for now.</p></details>
@@ -842,7 +942,7 @@ p{margin:0}
 <footer class="foot">
   <div class="wrap">
     <a class="brand" href="#top"><img src="img/icon.png" alt="">Ormy</a>
-    <nav aria-label="Legal"><a href="https://kyleorm.github.io/ormy-legal/privacy.html">Privacy</a><a href="https://kyleorm.github.io/ormy-legal/terms.html">Terms</a></nav>
+    <nav aria-label="Legal"><a href="https://kyleorm.github.io/ormy-legal/privacy.html">Privacy</a><a href="https://kyleorm.github.io/ormy-legal/terms.html">Terms</a><button type="button" id="trackingChoice">Tracking choice</button></nav>
     <span>© 2026 Ormy</span>
   </div>
 </footer>
@@ -945,6 +1045,7 @@ p{margin:0}
 
   function measure(){
     var wide = innerWidth >= 960;
+    L.narrow = innerWidth < 900;   // phones: words first, then the animation, and nothing loops
     L.phoneH = device.offsetHeight;
     L.y0 = intro.offsetTop + intro.offsetHeight + (wide ? 44 : 30);
     if (wide) {
@@ -974,6 +1075,7 @@ p{margin:0}
     byDist.forEach(function(l, k){ l.at = .022 + .07 * k / Math.max(1, letters.length - 1) + ((k * 37) % 11) / 11 * .006; });
     $$('.nstack').forEach(fitPile);
     drawMark();
+    fitLadder();
   }
 
   function showNote(n, t, y, extra){
@@ -1099,10 +1201,24 @@ p{margin:0}
     $('path', mark).setAttribute('d', CIRCLE.replace(/-?\d+(\.\d+)?/g, function(n){ return (+n * (k++ % 2 ? sy : sx)).toFixed(1); }));
   }
 
+  var pCopy = $('.p-copy', problem), pSeq = $('#gone');
   function renderGone(){
     var r = problem.getBoundingClientRect();
     ptitle.classList.toggle('drawn', r.top < innerHeight * .45);
     var g = clamp(-r.top / (problem.offsetHeight - pStage.offsetHeight), 0, 1);
+
+    // Phones: the words come first, on their own. Scroll on and they make way, the story
+    // takes their place, and it plays out over the rest of the section.
+    if (L.narrow) {
+      var w = seg(g, .16, .24), s = seg(g, .2, .28);
+      pCopy.style.opacity = 1 - w;
+      pCopy.style.transform = 'translateY(' + (-w * 28).toFixed(1) + 'px)';
+      pSeq.style.opacity = s;
+      pSeq.style.transform = 'translateY(' + ((1 - out(s)) * 24).toFixed(1) + 'px)';
+      g = seg(g, .28, 1);
+    } else {
+      pCopy.style.opacity = pCopy.style.transform = pSeq.style.opacity = pSeq.style.transform = '';
+    }
 
     // 9:00 AM: one ordinary reminder. It has to be noticed, so it lands like a real banner
     // (a drop, a buzz, a ring) and plays in full however fast you scroll. Then it's swiped away.
@@ -1155,8 +1271,14 @@ p{margin:0}
   }
   lane($('#lane1'), [0, 1, 2, 3, 4, 5, 6, 7]);
   lane($('#lane2'), [5, 7, 0, 4, 2, 6, 1, 3]);
-  var nap = $('#nap');
-  function checkNap(){ if (nap.getBoundingClientRect().top < innerHeight * .72) nap.classList.add('seen'); }
+  var nap = $('#nap'), lanes = $('.lanes', nap);
+  // Crossed out once the rows are actually on screen. On phones they then stop drifting:
+  // one thing moving at a time.
+  function checkNap(){
+    if (nap.classList.contains('seen') || lanes.getBoundingClientRect().top > innerHeight * .72) return;
+    nap.classList.add('seen');
+    if (L.narrow) setTimeout(function(){ nap.classList.add('still'); }, reduce ? 0 : 2400);
+  }
 
   /* ---------------- the day ---------------- */
   var moments = $$('.moment');
@@ -1165,15 +1287,32 @@ p{margin:0}
     moments.forEach(function(m){ m.classList.toggle('on', m.getBoundingClientRect().top + 14 < mark); });
   }
 
-  // Each moment plays once you reach it, and resets if you scroll back above it.
+  // Each moment plays when you reach it, rests on its ending, then plays again for as long
+  // as it's on screen. `len` is how long one play takes, in seconds; 0 plays it once.
+  // It resets if you scroll back above it. On phones it waits until its words have been
+  // read (the animation is up to mid-screen) and plays once: nothing moves while you read.
   var endAll = /[?&]end/.test(q);
-  var players = [];
+  var players = [], REST = 2.5;
   function later(pl, s, fn){ pl.timers.push(setTimeout(fn, (reduce || endAll) ? 0 : s * 1000)); }
-  function player(name, run, undo, live){
+  function onScreen(el){ var r = el.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight; }
+  function player(name, len, run, undo, live){
     var el = $('[data-play="' + name + '"]');
     var pl = { el: el, timers: [], played: false, live: live };
-    pl.play = function(){ if (pl.played) return; pl.played = true; run(pl, el); };
-    pl.reset = function(){ if (!pl.played) return; pl.timers.forEach(clearTimeout); pl.timers = []; pl.played = false; undo(el); };
+    pl.play = function(){
+      if (pl.played) return; pl.played = true; run(pl, el);
+      if (len && !reduce && !endAll && !L.narrow) later(pl, len + REST, replay);
+    };
+    pl.reset = function(){ el.classList.remove('rewind'); if (!pl.played) return; pl.timers.forEach(clearTimeout); pl.timers = []; pl.played = false; undo(el); };
+    // Fades out, rewinds while it can't be seen, then fades back in and plays again.
+    // Off screen it only rewinds, and plays from the start when it's next reached.
+    function replay(){
+      if (!onScreen(el)) return pl.reset();
+      el.classList.add('rewind');
+      later(pl, .35, function(){
+        pl.reset(); el.classList.add('rewind');
+        setTimeout(function(){ el.classList.remove('rewind'); if (onScreen(el)) pl.play(); }, 300);
+      });
+    }
     players.push(pl);
     undo(el);
   }
@@ -1181,7 +1320,7 @@ p{margin:0}
     var vh = innerHeight;
     players.forEach(function(pl){
       var r = pl.el.getBoundingClientRect();
-      if (r.top + Math.min(r.height, vh) * .5 < vh * .86 && r.bottom > 0) pl.play();
+      if (r.top + Math.min(r.height, vh) * .5 < vh * (L.narrow ? .6 : .86) && r.bottom > 0) pl.play();
       else if (r.top > vh + 40) pl.reset();
       if (pl.live) pl.live(pl.el, pl.played && r.bottom > 0 && r.top < vh);
     });
@@ -1216,7 +1355,7 @@ p{margin:0}
   function bump(el, text){ if (text) el.textContent = text; el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop'); }
 
   // 9:30 — due, then nudged three times, and only a tick makes it stop.
-  player('meds', function(pl, el){
+  player('meds', 6, function(pl, el){
     var st = $('.nstack', el), ns = $$('.ntf', st), cnt = $('.cnt', el), card = $('.rc', el);
     later(pl, .6, function(){ pile(st, ns.slice(0, 2)); card.classList.remove('nochase'); bump(cnt, '1 time'); });
     later(pl, 1.8, function(){ pile(st, ns.slice(0, 3)); bump(cnt, '2 times'); });
@@ -1231,7 +1370,7 @@ p{margin:0}
   });
 
   // 10:15 — tick the washing, and the next step drops in.
-  player('wash', function(pl, el){
+  player('wash', 2.2, function(pl, el){
     later(pl, .5, function(){ tick($('.rc', el)); });
     later(pl, 1.5, function(){ var s = $('.sugg', el); s.classList.remove('wait'); s.classList.add('in'); });
   }, function(el){
@@ -1245,7 +1384,7 @@ p{margin:0}
     var len = road.getTotalLength(), A = len * .2, B = len * .72, end = road.getPointAtLength(B);
     fz.setAttribute('transform', 'translate(' + end.x.toFixed(1) + ' ' + end.y.toFixed(1) + ')');
     function put(at){ var pt = road.getPointAtLength(at); me.setAttribute('cx', pt.x.toFixed(1)); me.setAttribute('cy', pt.y.toFixed(1)); }
-    player('place', function(pl){
+    player('place', 3.3, function(pl){
       later(pl, .3, function(){
         var t0 = null, dur = (reduce || endAll) ? 1 : 2100, arrived = false;
         function step(now){
@@ -1272,7 +1411,7 @@ p{margin:0}
       card.style.transform = 'translateY(' + (10 + (mins - 960) / 60 * hr() - card.offsetHeight / 2) + 'px)';
       tEl.textContent = fmt(Math.round(mins / 5) * 5);
     }
-    player('drag', function(pl){
+    player('drag', 3, function(pl){
       later(pl, .3, function(){ drag.classList.add('lifted'); });
       later(pl, .8, function(){
         var t0 = null, dur = (reduce || endAll) ? 1 : 1500;
@@ -1291,10 +1430,10 @@ p{margin:0}
   })();
 
   // 7:30 — it rings, for as long as it's on screen.
-  player('alarm', function(){}, function(){}, function(el, on){ $('.alarm-s', el).classList.toggle('ringing', on && !reduce); });
+  player('alarm', 0, function(){}, function(){}, function(el, on){ $('.alarm-s', el).classList.toggle('ringing', on && !reduce); });
 
   // 8:00 — four warnings, ticked off one by one.
-  player('bday', function(pl, el){
+  player('bday', 4.3, function(pl, el){
     var st = $('.nstack', el), ns = $$('.ntf', st), chips = $$('.chips span:not(.off)', el);
     [0, 1, 2, 3].forEach(function(i){
       later(pl, .3 + i * 1.15, function(){ pile(st, ns.slice(0, i + 1)); chips[i].classList.add('lit'); bump(chips[i]); });
@@ -1303,6 +1442,22 @@ p{margin:0}
     pile($('.nstack', el), []);
     $$('.chips span', el).forEach(function(c){ c.classList.remove('lit', 'pop'); });
   });
+
+  /* ---------------- what if I ignore it ---------------- */
+  // The hour after a reminder is due. Each alert lands as the scroll reaches it, the same
+  // way the day's moments light up, and the alarm rings while it's on screen.
+  var rungs = $$('.rung'), ringer = $('.ladder .alarm-s'), hourRail = $('.ladder .rail');
+  // The line runs from the first dot to the last one, not on under the closing words.
+  function fitLadder(){
+    var last = rungs[rungs.length - 1];
+    hourRail.style.bottom = (last.offsetParent.offsetHeight - last.offsetTop - 9) + 'px';
+  }
+  function ladder(){
+    var mark = innerHeight * .62;
+    rungs.forEach(function(r){ r.classList.toggle('on', endAll || r.getBoundingClientRect().top + 9 < mark); });
+    var a = ringer.getBoundingClientRect();
+    ringer.classList.toggle('ringing', !reduce && ringer.parentNode.classList.contains('on') && a.bottom > 0 && a.top < innerHeight);
+  }
 
   /* ---------------- the FINAL NUDGE ---------------- */
   // The waitlist box is dressed as Ormy's own FINAL NUDGE, in the app's wording, due at the
@@ -1332,7 +1487,7 @@ p{margin:0}
   }
 
   var queued = false;
-  function render(){ navTick(); renderStory(); renderGone(); checkNap(); light(); checkPlayers(); checkFinal(); }
+  function render(){ navTick(); renderStory(); renderGone(); checkNap(); light(); checkPlayers(); ladder(); checkFinal(); }
   function onScroll(){
     if (queued) return; queued = true;
     requestAnimationFrame(function(){ queued = false; render(); });
@@ -1360,15 +1515,16 @@ p{margin:0}
       inView(el, function(){ animate(el, { opacity: [0, 1], transform: ['translateY(26px)', 'none'] }, { duration: .75, ease: ease }); }, { amount: .2 });
     });
     scroll(animate($('#railFill'), { transform: ['scaleY(0)', 'scaleY(1)'] }, { ease: 'linear' }), { target: $('#line'), offset: ['start 60%', 'end 60%'] });
+    scroll(animate($('#hourFill'), { transform: ['scaleY(0)', 'scaleY(1)'] }, { ease: 'linear' }), { target: $('.ladder .rail'), offset: ['start 62%', 'end 62%'] });
   }
 
   // Joining, from either box: the address goes onto the waitlist in Convex, and only once
   // it's safely there is it ticked off like any reminder ("chased you 1 time" if they got
   // as far as the FINAL NUDGE; no chased line if they joined before it).
   var ENDPOINT = $('meta[name="waitlist-endpoint"]').content;
-  // A copy of the page running on this computer (tests, previews) never writes to the live
-  // list: it pretends the sign-up worked instead. A test once left a fake address in it.
-  var LOCAL = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname) || location.protocol === 'file:';
+  // A copy of the page (this computer, a preview link) never writes to the live list: it
+  // pretends the sign-up worked instead. A test once left a fake address in it.
+  var LOCAL = !window.ORMY_LIVE;
   function showJoined(n){
     var card = $('#joinCard');
     $('#chased').textContent = 'Ormy chased you ' + n + (n === 1 ? ' time' : ' times');
@@ -1395,10 +1551,52 @@ p{margin:0}
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: email, source: form.classList.contains('mini-join') ? 'why' : 'final', referrer: document.referrer, company: $('.hp', form).value })
       }))
-        .then(function(r){ if (!r.ok) throw new Error('waitlist ' + r.status); showJoined(n); })
+        .then(function(r){ if (!r.ok) throw new Error('waitlist ' + r.status); if (window.fbq && !LOCAL) fbq('track', 'Lead'); showJoined(n); })
         .catch(function(){ err.textContent = "Couldn't reach Ormy just then. Try again?"; })
         .then(function(){ busy = false; btn.disabled = false; btn.firstChild.nodeValue = label; });
     });
+  });
+})();
+</script>
+<style>
+.consent{position:fixed;left:12px;right:12px;bottom:12px;z-index:9999;max-width:520px;margin:0 auto;padding:14px 16px;background:var(--ink);color:#fff;border-radius:16px;font:600 14px/1.45 var(--body);box-shadow:0 8px 30px rgba(0,0,0,.25)}
+.consent[hidden]{display:none}
+.consent p{margin:0 0 10px}
+.consent a{color:#fff;text-decoration:underline}
+.consent .row{display:flex;gap:8px}
+.consent button{flex:1;min-height:44px;border:0;border-radius:12px;font:800 14px var(--body);cursor:pointer}
+.consent .yes{background:var(--hot);color:#fff}
+.consent .no{background:#3A342E;color:#fff}
+</style>
+<div class="consent" id="consent" role="dialog" aria-label="Cookies and tracking" hidden>
+  <p>Can Ormy use Meta's tracking to see which ads bring people to the waitlist? Say no and the page works exactly the same. <a href="https://kyleorm.github.io/ormy-legal/privacy.html#website">Details</a></p>
+  <div class="row"><button class="no" type="button">No thanks</button><button class="yes" type="button">Accept</button></div>
+</div>
+<script>
+// Asked once. "Tracking choice" in the footer asks again, and turning a yes into a no
+// removes Meta's cookie and reloads, so the Pixel is gone from the page too.
+(function(){
+  var box = document.getElementById('consent'), chosen = null;
+  try { chosen = localStorage.getItem('ormy-consent'); } catch (e) {}
+  if (!chosen) box.hidden = false;
+  function forgetMeta(){
+    var parts = location.hostname.split('.');
+    ['_fbp', '_fbc'].forEach(function(name){
+      document.cookie = name + '=; Max-Age=0; path=/';
+      for (var i = 0; i < parts.length - 1; i++) document.cookie = name + '=; Max-Age=0; path=/; domain=.' + parts.slice(i).join('.');
+    });
+  }
+  function pick(v){
+    try { localStorage.setItem('ormy-consent', v); } catch (e) {}
+    box.hidden = true;
+    if (v === 'yes') window.ormyLoadPixel();
+    else { forgetMeta(); if (window.fbq) location.reload(); }
+  }
+  box.querySelector('.yes').addEventListener('click', function(){ pick('yes'); });
+  box.querySelector('.no').addEventListener('click', function(){ pick('no'); });
+  document.getElementById('trackingChoice').addEventListener('click', function(){
+    box.hidden = false;
+    box.querySelector('.no').focus();
   });
 })();
 </script>
