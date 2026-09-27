@@ -254,7 +254,8 @@ p{margin:0}
 .pt-mark path{fill:none;stroke:#D9391B;stroke-width:.056em;stroke-linecap:round;stroke-dasharray:1 1.2;stroke-dashoffset:1.1;transition:stroke-dashoffset 1s cubic-bezier(.6,0,.2,1) .2s}
 .ptitle.drawn .pt-mark path{stroke-dashoffset:0}
 .problem h2 em{background-image:linear-gradient(100deg,#F2553A 0%,#C8231C 100%)}
-.p-tag{display:inline-block;margin-bottom:12px;font:800 11.5px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+/* "What usually happens": a heading people will actually read (it was a small grey label) */
+.p-tag{margin-bottom:12px;font-size:clamp(26px,2.5vw,32px);line-height:1.1}
 .p-stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden;display:flex;align-items:center;padding-top:calc(70px + env(safe-area-inset-top,0px))}
 .p-stage > .wrap{width:100%}
 .p-copy h2{margin-top:18px;max-width:11em}
@@ -672,7 +673,7 @@ p{margin:0}
     </div>
 
     <div class="p-seq" id="gone">
-      <span class="p-tag">What usually happens</span>
+      <h3 class="p-tag">What usually happens</h3>
       <div class="p-clock" id="pClock" aria-hidden="true"><span id="gClock">9:00</span><small id="gAmPm">AM</small></div>
 
       <div class="p-caps">
