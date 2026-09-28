@@ -147,8 +147,12 @@ p{margin:0}
 @media (min-width:960px){.stage{--pw:min(360px,calc((100vh - 150px) / 2.09))}}
 
 .intro{position:absolute;left:0;right:0;top:calc(84px + env(safe-area-inset-top,0px));padding:0 var(--gutter);text-align:center;z-index:4}
+/* says plainly what this is, before anything else */
+.what{display:inline-flex;align-items:center;gap:9px;height:38px;margin:0 0 16px;padding:0 16px;border-radius:999px;background:#FFEDE3;color:#B83A0E;font:800 17px/1 var(--body)}
+.what::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--hot)}
+@media (min-width:960px){.what{height:42px;padding:0 18px;font-size:19px;margin-bottom:20px}}
 .intro h1{max-width:12.2em;margin:0 auto}
-.intro .lede{max-width:21em;margin:16px auto 0}
+.intro .lede{max-width:21em;margin:16px auto 0;text-wrap:balance}
 .intro .btn.hot{margin-top:24px}
 .intro .lede,.intro .btn.hot,.byline{will-change:opacity}
 .byline{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:16px;font:700 14px var(--body);color:var(--text-2)}
@@ -609,8 +613,9 @@ p{margin:0}
   <div class="stage" id="stage">
 
     <div class="intro" id="intro">
+      <p class="what">ADHD reminder app</p>
       <h1>No more <em>forgetting</em> the things that matter</h1>
-      <p class="lede">The ADHD reminder app that comes to you, and keeps coming back until it's done.</p>
+      <p class="lede">It comes to you, and keeps coming back until it's done.</p>
       <a class="btn hot" href="#waitlist">Join the iPhone waitlist<i><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i></a>
       <div class="byline"><img src="img/founder.jpg" alt="">Built by Kyle, who has ADHD too</div>
     </div>
@@ -985,7 +990,7 @@ p{margin:0}
   var off = $('#off'), hole = $('#hole'), trails = $('#trails');
   var caps = $$('.cap'), logEl = $('#log'), logItems = $$('#log li'), notes = $$('#list .ntf');
   var agoOf = notes.map(function(n){ return $('.ago', n); });
-  var fades = [$('.lede', intro), $('.btn.hot', intro), $('.byline', intro)];
+  var fades = [$('.what', intro), $('.lede', intro), $('.btn.hot', intro), $('.byline', intro)];
   var clock = $('#clock');
   var L = {};
   var SVGNS = 'http://www.w3.org/2000/svg';
