@@ -1573,6 +1573,12 @@ p{margin:0}
   // A copy of the page (this computer, a preview link) never writes to the live list: it
   // pretends the sign-up worked instead. A test once left a fake address in it.
   var LOCAL = !window.ORMY_LIVE;
+  // The utm_ tags on the link they arrived by (an ad, a Reddit post, an email), so the
+  // sign-up says where it came from. Facebook and Instagram add fbclid to every link
+  // click, so an untagged one still counts as Meta.
+  var UTM = {}, query = new URLSearchParams(location.search);
+  ['source', 'medium', 'campaign', 'content'].forEach(function(k){ var val = query.get('utm_' + k); if (val) UTM[k] = val; });
+  if (!UTM.source && query.get('fbclid')) UTM.source = 'meta';
   function showJoined(n){
     var card = $('#joinCard');
     $('#chased').textContent = 'Ormy chased you ' + n + (n === 1 ? ' time' : ' times');
@@ -1597,7 +1603,7 @@ p{margin:0}
       (LOCAL ? Promise.resolve({ ok: true }) : fetch(ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email, source: form.classList.contains('mini-join') ? 'why' : 'final', referrer: document.referrer, company: $('.hp', form).value })
+        body: JSON.stringify({ email: email, source: form.classList.contains('mini-join') ? 'why' : 'final', referrer: document.referrer, utm: UTM, company: $('.hp', form).value })
       }))
         .then(function(r){ if (!r.ok) throw new Error('waitlist ' + r.status); if (window.fbq && !LOCAL) fbq('track', 'Lead'); showJoined(n); })
         .catch(function(){ err.textContent = "Couldn't reach Ormy just then. Try again?"; })
