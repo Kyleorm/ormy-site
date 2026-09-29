@@ -5,21 +5,21 @@
 <meta name="description" content="The ADHD reminder app that comes to you. Ormy nudges you until it's done, warns you days before the big stuff, and rings when you really can't miss it. Join the waitlist.">
 <link rel="icon" href="img/icon.png">
 <link rel="apple-touch-icon" href="img/icon.png">
-<link rel="canonical" href="https://ormy.turbolt.co.uk/">
+<link rel="canonical" href="https://getormy.com/">
 <!-- What X, Reddit and messages show when the link is shared -->
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://ormy.turbolt.co.uk/">
+<meta property="og:url" content="https://getormy.com/">
 <meta property="og:site_name" content="Ormy">
 <meta property="og:title" content="Ormy — the ADHD reminder app that comes to you">
 <meta property="og:description" content="It nudges you until it's done, warns you days before the big stuff, and rings when you can't miss it. Coming to iPhone: join the waitlist.">
-<meta property="og:image" content="https://ormy.turbolt.co.uk/og.png">
+<meta property="og:image" content="https://getormy.com/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Ormy: No more forgetting the things that matter, with an iPhone lock screen full of Ormy nudges">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Ormy — the ADHD reminder app that comes to you">
 <meta name="twitter:description" content="It nudges you until it's done. Coming to iPhone: join the waitlist.">
-<meta name="twitter:image" content="https://ormy.turbolt.co.uk/og.png">
+<meta name="twitter:image" content="https://getormy.com/og.png">
 <!-- Where the signup boxes send emails: Convex's /waitlist route -->
 <meta name="waitlist-endpoint" content="https://standing-emu-641.convex.site/waitlist">
 <!-- Meta Pixel: lets Meta ads count waitlist sign-ups (PageView on load, Lead on join).
@@ -28,8 +28,9 @@
 <script>
 // The real site. Anywhere else (this computer, a preview link) is a copy: it never
 // reports to Meta and never writes to the live waitlist. (If the site moves to a new
-// domain, change it here as well as in the canonical and og: URLs.)
-window.ORMY_LIVE = location.hostname === 'ormy.turbolt.co.uk';
+// domain, change it here as well as in the canonical and og: URLs, sitemap.xml and
+// robots.txt. It moved from ormy.turbolt.co.uk to getormy.com on 2026-09-29.)
+window.ORMY_LIVE = location.hostname === 'getormy.com' || location.hostname === 'www.getormy.com';
 window.ormyLoadPixel = function(){
 if (window.fbq || !window.ORMY_LIVE) return;
 !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
