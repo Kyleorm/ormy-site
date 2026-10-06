@@ -39,6 +39,37 @@ fbq('track', 'PageView');
 };
 try { if (localStorage.getItem('ormy-consent') === 'yes') window.ormyLoadPixel(); } catch (e) {}
 </script>
+<!-- PostHog (EU): which ads and posts bring people here, where they click, how far they
+     scroll, and how many join. Live site only. "No thanks", or no answer, is counted
+     WITHOUT cookies (an anonymous daily hash worked out on PostHog's servers); "Accept"
+     adds cookies and recordings of the visit, with anything typed hidden. Needs
+     "Cookieless tracking" switched on in PostHog's Web analytics settings, or the
+     no-cookie visits are thrown away. -->
+<script>
+// Tells PostHog what the banner says. Called once PostHog has loaded, and again on every
+// answer. No answer yet counts as no: the visit is still counted, just without cookies.
+window.ormyPostHogConsent = function(ph){
+  // `loaded` hands over the real PostHog, because window.posthog is still the stand-in
+  // while it runs. From the banner, window.posthog is the real one by then.
+  ph = ph || window.posthog;
+  if (!ph || !ph.get_explicit_consent_status) return; // still loading: `loaded` calls this
+  var yes = false;
+  try { yes = localStorage.getItem('ormy-consent') === 'yes'; } catch (e) {}
+  var now = ph.get_explicit_consent_status();
+  if (yes && now !== 'granted') ph.opt_in_capturing();
+  else if (!yes && now !== 'denied') ph.opt_out_capturing();
+};
+if (window.ORMY_LIVE) {
+!function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],Object.defineProperty(u,"toString",{configurable:!0,enumerable:!0,writable:!0,value:function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e}}),Object.defineProperty(u.people,"toString",{configurable:!0,enumerable:!0,writable:!0,value:function(){return u.toString(1)+".people (stub)"}}),o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getSurveys getActiveMatchingSurveys captureException".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+posthog.init('phc_DjVVmLgAb9oYaeyWZ2jg8qjYo5egsBFHr5zeApTLU2bA', {
+  api_host: 'https://eu.i.posthog.com',
+  defaults: '2026-05-30',
+  person_profiles: 'identified_only',
+  cookieless_mode: 'on_reject',
+  loaded: function(ph){ window.ormyPostHogConsent(ph); }
+});
+}
+</script>
 <!-- Ormy's fonts (Fraunces and Nunito, both SIL Open Font License), served from this site
      rather than Google's, so no visitor's browser talks to anyone but us. Latin subsets only. -->
 <link rel="preload" href="fonts/fraunces-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
@@ -1598,14 +1629,20 @@ p{margin:0}
       var email = input.value.trim();
       err.textContent = '';
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { input.value = ''; input.placeholder = 'That email looks off. Try again?'; input.focus(); return; }
-      var n = sawFinal ? 1 : 0;
+      var n = sawFinal ? 1 : 0, where = form.classList.contains('mini-join') ? 'why' : 'final';
       busy = true; btn.disabled = true; btn.firstChild.nodeValue = 'Joining…';
       (LOCAL ? Promise.resolve({ ok: true }) : fetch(ENDPOINT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email, source: form.classList.contains('mini-join') ? 'why' : 'final', referrer: document.referrer, utm: UTM, company: $('.hp', form).value })
+        body: JSON.stringify({ email: email, source: where, referrer: document.referrer, utm: UTM, company: $('.hp', form).value })
       }))
-        .then(function(r){ if (!r.ok) throw new Error('waitlist ' + r.status); if (window.fbq && !LOCAL) fbq('track', 'Lead'); showJoined(n); })
+        .then(function(r){
+          if (!r.ok) throw new Error('waitlist ' + r.status);
+          if (window.fbq && !LOCAL) fbq('track', 'Lead');
+          // Which box, never the address: PostHog is never sent an email.
+          if (window.posthog && !LOCAL) posthog.capture('waitlist_joined', { form: where });
+          showJoined(n);
+        })
         .catch(function(){ err.textContent = "Couldn't reach Ormy just then. Try again?"; })
         .then(function(){ busy = false; btn.disabled = false; btn.firstChild.nodeValue = label; });
     });
@@ -1623,7 +1660,7 @@ p{margin:0}
 .consent .no{background:#3A342E;color:#fff}
 </style>
 <div class="consent" id="consent" role="dialog" aria-label="Cookies and tracking" hidden>
-  <p>Can Ormy use Meta's tracking to see which ads bring people to the waitlist? Say no and the page works exactly the same. <a href="https://kyleorm.github.io/ormy-legal/privacy.html#website">Details</a></p>
+  <p>Can Ormy use cookies to see which ads bring people here and record how the page is used (Meta and PostHog)? Say no and the page works exactly the same. <a href="https://kyleorm.github.io/ormy-legal/privacy.html#website">Details</a></p>
   <div class="row"><button class="no" type="button">No thanks</button><button class="yes" type="button">Accept</button></div>
 </div>
 <script>
@@ -1643,6 +1680,7 @@ p{margin:0}
   function pick(v){
     try { localStorage.setItem('ormy-consent', v); } catch (e) {}
     box.hidden = true;
+    window.ormyPostHogConsent();
     if (v === 'yes') window.ormyLoadPixel();
     else { forgetMeta(); if (window.fbq) location.reload(); }
   }
