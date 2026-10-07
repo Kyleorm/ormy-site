@@ -22,8 +22,9 @@
 <script type="application/ld+json">[{"@context":"https://schema.org","@type":"Article","headline":"The best ADHD reminder apps in 2026, honestly compared","description":"Five apps people with ADHD use to stop forgetting things, what each one is best at, and who should pick which. From the founder of one of them.","image":"https://getormy.com/og.png","datePublished":"2026-10-06","dateModified":"2026-10-06","mainEntityOfPage":"https://getormy.com/best-adhd-reminder-apps/","author":{"@type":"Person","name":"Kyle Ormesher","jobTitle":"Founder of Ormy","url":"https://getormy.com"},"publisher":{"@type":"Organization","name":"Ormy","url":"https://getormy.com","logo":{"@type":"ImageObject","url":"https://getormy.com/img/icon.png"}}},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Ormy","item":"https://getormy.com/"},{"@type":"ListItem","position":2,"name":"The best ADHD reminder apps in 2026, honestly compared","item":"https://getormy.com/best-adhd-reminder-apps/"}]},{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What's the best reminder app for ADHD?","acceptedAnswer":{"@type":"Answer","text":"The one that fixes your problem. If you forget even with reminders, pick one that keeps reminding you, like Ormy or Due. If planning is the hard part, Tiimo or Structured."}},{"@type":"Question","name":"Is there a free ADHD reminder app?","acceptedAnswer":{"@type":"Answer","text":"Apple Reminders is free and already on your iPhone. Tiimo and Structured both have free versions too."}},{"@type":"Question","name":"Why do I still forget things when I set reminders?","acceptedAnswer":{"@type":"Answer","text":"A single notification is easy to swipe away without really reading it. That's why some apps, like Ormy and Due, keep reminding you until you mark the thing done."}},{"@type":"Question","name":"When can I get Ormy?","acceptedAnswer":{"@type":"Answer","text":"It's coming to iPhone soon. Join the waitlist at getormy.com and you'll get an email the day it's out."}}]}]</script>
 <!-- Built by articles/build.js from articles/best-adhd-reminder-apps.md. Edit the .md and rebuild; don't edit this file. -->
 <!-- Meta Pixel: lets Meta ads count waitlist sign-ups (PageView on load, Lead on join).
-     It loads ONLY after the visitor taps "Accept" on the banner at the bottom of the page,
-     and only on the live site. -->
+     In the UK and Europe it loads ONLY after the visitor taps "Accept" on the banner at the
+     bottom of the page; elsewhere it loads straight away unless they've said no. Only ever
+     on the live site. -->
 <script>
 // The real site. Anywhere else (this computer, a preview link) is a copy: it never
 // reports to Meta and never writes to the live waitlist. (If the site moves to a new
@@ -36,24 +37,47 @@ if (window.fbq || !window.ORMY_LIVE) return;
 fbq('init', '960843731947725');
 fbq('track', 'PageView');
 };
-try { if (localStorage.getItem('ormy-consent') === 'yes') window.ormyLoadPixel(); } catch (e) {}
+// Only visitors in the UK and Europe are asked first; their law says so (Kyle, 7 Oct 2026).
+// Everyone else is tracked from the start and can still say no with "Tracking choice" in
+// the footer. Where someone is comes from their device's time zone: nothing is sent
+// anywhere to work it out. Anything unclear (no time zone, "UTC", a Global Privacy Control
+// signal) is asked, to be safe. The list covers the UK, the EU and EEA, Switzerland, the
+// Isle of Man and the Channel Islands, Cyprus (an "Asia/" zone) and the EU's overseas
+// regions, plus old-style names some systems still report.
+window.ORMY_ASK = (function(){
+  try {
+    if (navigator.globalPrivacyControl) return true;
+    var tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+    return !tz || /^(Europe|Atlantic|Arctic|Etc)\//.test(tz)
+      || /^(UTC|UCT|GMT|Universal|Zulu|GB|GB-Eire|Eire|Portugal|Poland|Iceland|WET|CET|MET|EET)$/.test(tz)
+      || /^(Asia\/(Nicosia|Famagusta)|Africa\/Ceuta|Indian\/(Reunion|Mayotte)|America\/(Cayenne|Guadeloupe|Martinique|Marigot))$/.test(tz);
+  } catch (e) { return true; }
+})();
+// The visitor's answer: "yes", "no", or null when they haven't been asked yet. Anyone we
+// don't ask counts as "yes" until they say otherwise.
+window.ormyConsent = function(){
+  var v = null;
+  try { v = localStorage.getItem('ormy-consent'); } catch (e) {}
+  return v || (window.ORMY_ASK ? null : 'yes');
+};
+if (window.ormyConsent() === 'yes') window.ormyLoadPixel();
 </script>
 <!-- PostHog (EU): which ads and posts bring people here, where they click, how far they
-     scroll, and how many join. Live site only. "No thanks", or no answer, is counted
+     scroll, and how many join. Live site only. "No thanks", or no answer in the UK and Europe, is counted
      WITHOUT cookies (an anonymous daily hash worked out on PostHog's servers); "Accept"
      adds cookies and recordings of the visit, with anything typed hidden. Needs
      "Cookieless tracking" switched on in PostHog's Web analytics settings, or the
      no-cookie visits are thrown away. -->
 <script>
 // Tells PostHog what the banner says. Called once PostHog has loaded, and again on every
-// answer. No answer yet counts as no: the visit is still counted, just without cookies.
+// answer. In the UK and Europe no answer yet counts as no: the visit is still counted, just
+// without cookies. Elsewhere it counts as yes (ormyConsent).
 window.ormyPostHogConsent = function(ph){
   // `loaded` hands over the real PostHog, because window.posthog is still the stand-in
   // while it runs. From the banner, window.posthog is the real one by then.
   ph = ph || window.posthog;
   if (!ph || !ph.get_explicit_consent_status) return; // still loading: `loaded` calls this
-  var yes = false;
-  try { yes = localStorage.getItem('ormy-consent') === 'yes'; } catch (e) {}
+  var yes = window.ormyConsent() === 'yes';
   var now = ph.get_explicit_consent_status();
   if (yes && now !== 'granted') ph.opt_in_capturing();
   else if (!yes && now !== 'denied') ph.opt_out_capturing();
@@ -238,12 +262,12 @@ It&#39;s coming to iPhone soon. Join the waitlist at <a href="/?utm_source=getor
   <div class="row"><button class="no" type="button">No thanks</button><button class="yes" type="button">Accept</button></div>
 </div>
 <script>
-// Asked once. "Tracking choice" in the footer asks again, and turning a yes into a no
-// removes Meta's cookie and reloads, so the Pixel is gone from the page too.
+// Asked once, and only in the UK and Europe (ORMY_ASK, in the head). "Tracking choice" in
+// the footer asks anyone again, and turning a yes into a no removes Meta's cookie and
+// reloads, so the Pixel is gone from the page too.
 (function(){
-  var box = document.getElementById('consent'), chosen = null;
-  try { chosen = localStorage.getItem('ormy-consent'); } catch (e) {}
-  if (!chosen) box.hidden = false;
+  var box = document.getElementById('consent');
+  if (!window.ormyConsent()) box.hidden = false;
   function forgetMeta(){
     var parts = location.hostname.split('.');
     ['_fbp', '_fbc'].forEach(function(name){
