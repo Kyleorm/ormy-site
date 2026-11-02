@@ -2,37 +2,35 @@
 <html lang="en"><head><meta charset="utf-8">
 <title>Ormy — The ADHD reminder app</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="The ADHD reminder app that comes to you. Ormy nudges you until it's done, warns you days before the big stuff, and rings when you really can't miss it. Join the waitlist.">
+<meta name="description" content="The ADHD reminder app that comes to you. Ormy nudges you until it's done, warns you days before the big stuff, and rings when you really can't miss it. Download it on the App Store.">
 <link rel="icon" href="img/icon.png">
 <link rel="apple-touch-icon" href="img/icon.png">
 <link rel="canonical" href="https://getormy.com/">
 <!-- Proves to Google Search Console that this site is Kyle's. Removing it unverifies the site. -->
 <meta name="google-site-verification" content="C9Zk0DU8LZwKUXyDi4nq9P4wY0QinfGysZ9yX-oebkE">
 <!-- Who Ormy is and the "Good to know" answers, in the form Google and AI answers read. Keep the FAQ matching the section on the page. -->
-<script type="application/ld+json">[{"@context":"https://schema.org","@type":"Organization","name":"Ormy","url":"https://getormy.com/","logo":"https://getormy.com/img/icon.png","founder":{"@type":"Person","name":"Kyle Ormesher"}},{"@context":"https://schema.org","@type":"WebSite","name":"Ormy","url":"https://getormy.com/"},{"@context":"https://schema.org","@type":"MobileApplication","name":"Ormy","operatingSystem":"iOS","applicationCategory":"ProductivityApplication","url":"https://getormy.com/","description":"The ADHD reminder app that nudges you until it's done, warns you days before the big stuff, and rings when you can't miss it."},{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Does it call or text me?","acceptedAnswer":{"@type":"Answer","text":"No. It all happens on your iPhone: a nudge every 10 minutes for an hour, then a real alarm if you've switched one on for that reminder."}},{"@type":"Question","name":"Is it only for people with ADHD?","acceptedAnswer":{"@type":"Answer","text":"No. It's built by someone with ADHD, for anyone whose brain drops the important stuff."}},{"@type":"Question","name":"Does it use AI?","acceptedAnswer":{"@type":"Answer","text":"Only if you switch it on. When it's on, Ormy's AI sees a reminder's title and how far away it is. Nothing else."}},{"@type":"Question","name":"Is it on Android?","acceptedAnswer":{"@type":"Answer","text":"Not yet. Ormy is iPhone only for now."}}]}]</script>
+<script type="application/ld+json">[{"@context":"https://schema.org","@type":"Organization","name":"Ormy","url":"https://getormy.com/","logo":"https://getormy.com/img/icon.png","founder":{"@type":"Person","name":"Kyle Ormesher"}},{"@context":"https://schema.org","@type":"WebSite","name":"Ormy","url":"https://getormy.com/"},{"@context":"https://schema.org","@type":"MobileApplication","name":"Ormy","operatingSystem":"iOS","applicationCategory":"ProductivityApplication","url":"https://getormy.com/","downloadUrl":"https://apps.apple.com/app/id6781041760","description":"The ADHD reminder app that nudges you until it's done, warns you days before the big stuff, and rings when you can't miss it."},{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"When can I get it?","acceptedAnswer":{"@type":"Answer","text":"Now. Ormy is on the App Store, for iPhone."}},{"@type":"Question","name":"Does it call or text me?","acceptedAnswer":{"@type":"Answer","text":"No. It all happens on your iPhone: a nudge every 10 minutes for an hour, then a real alarm if you've switched one on for that reminder."}},{"@type":"Question","name":"Is it only for people with ADHD?","acceptedAnswer":{"@type":"Answer","text":"No. It's built by someone with ADHD, for anyone whose brain drops the important stuff."}},{"@type":"Question","name":"Does it use AI?","acceptedAnswer":{"@type":"Answer","text":"Only if you switch it on. When it's on, Ormy's AI sees a reminder's title and how far away it is. Nothing else."}},{"@type":"Question","name":"Is it on Android?","acceptedAnswer":{"@type":"Answer","text":"Not yet. Ormy is iPhone only for now."}}]}]</script>
 <!-- What X, Reddit and messages show when the link is shared -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://getormy.com/">
 <meta property="og:site_name" content="Ormy">
 <meta property="og:title" content="Ormy — the ADHD reminder app that comes to you">
-<meta property="og:description" content="It nudges you until it's done, warns you days before the big stuff, and rings when you can't miss it. Coming to iPhone: join the waitlist.">
+<meta property="og:description" content="It nudges you until it's done, warns you days before the big stuff, and rings when you can't miss it. Out now on iPhone.">
 <meta property="og:image" content="https://getormy.com/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Ormy: No more forgetting the things that matter, with an iPhone lock screen full of Ormy nudges">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Ormy — the ADHD reminder app that comes to you">
-<meta name="twitter:description" content="It nudges you until it's done. Coming to iPhone: join the waitlist.">
+<meta name="twitter:description" content="It nudges you until it's done. Out now on iPhone.">
 <meta name="twitter:image" content="https://getormy.com/og.png">
-<!-- Where the signup boxes send emails: Convex's /waitlist route -->
-<meta name="waitlist-endpoint" content="https://standing-emu-641.convex.site/waitlist">
-<!-- Meta Pixel: lets Meta ads count waitlist sign-ups (PageView on load, Lead on join).
+<!-- Meta Pixel: lets Meta ads count taps on the App Store buttons (PageView on load, Lead on a tap).
      In the UK and Europe it loads ONLY after the visitor taps "Accept" on the banner at the
      bottom of the page; elsewhere it loads straight away unless they've said no. Only ever
      on the live site. -->
 <script>
 // The real site. Anywhere else (this computer, a preview link) is a copy: it never
-// reports to Meta and never writes to the live waitlist. (If the site moves to a new
+// reports to Meta. (If the site moves to a new
 // domain, change it here as well as in the canonical and og: URLs, sitemap.xml and
 // robots.txt. It moved from ormy.turbolt.co.uk to getormy.com on 2026-09-29.)
 window.ORMY_LIVE = location.hostname === 'getormy.com' || location.hostname === 'www.getormy.com';
@@ -68,7 +66,7 @@ window.ormyConsent = function(){
 if (window.ormyConsent() === 'yes') window.ormyLoadPixel();
 </script>
 <!-- PostHog (EU): which ads and posts bring people here, where they click, how far they
-     scroll, and how many join. Live site only. "No thanks", or no answer in the UK and Europe, is counted
+     scroll, and how many tap through to the App Store. Live site only. "No thanks", or no answer in the UK and Europe, is counted
      WITHOUT cookies (an anonymous daily hash worked out on PostHog's servers); "Accept"
      adds cookies and recordings of the visit, with anything typed hidden. Needs
      "Cookieless tracking" switched on in PostHog's Web analytics settings, or the
@@ -96,6 +94,14 @@ posthog.init('phc_DjVVmLgAb9oYaeyWZ2jg8qjYo5egsBFHr5zeApTLU2bA', {
   cookieless_mode: 'on_reject',
   loaded: function(ph){ window.ormyPostHogConsent(ph); }
 });
+// Every App Store button, here and on the articles. The app has no Meta SDK, so this tap is
+// the only "download" Meta can ever see, and PostHog is told which button it was.
+document.addEventListener('click', function(e){
+  var a = e.target.closest('a[href^="https://apps.apple.com/app/id6781041760"]');
+  if (!a) return;
+  if (window.fbq) fbq('track', 'Lead');
+  posthog.capture('app_store_tap', { button: a.getAttribute('data-button') || 'link' }, { send_instantly: true, transport: 'sendBeacon' });
+});
 }
 </script>
 <!-- Ormy's fonts (Fraunces and Nunito, both SIL Open Font License), served from this site
@@ -122,7 +128,7 @@ posthog.init('phc_DjVVmLgAb9oYaeyWZ2jg8qjYo5egsBFHr5zeApTLU2bA', {
 </style>
 <style>
 /* ==========================================================
-   Ormy waitlist, v9. The top of the page is a story you scroll:
+   Ormy's site. The top of the page is a story you scroll:
    Ormy's real nudges land on a lock screen, stack up, and your
    scroll ticks them off in Kyle's real recording.
    ========================================================== */
@@ -171,6 +177,15 @@ p{margin:0}
 .btn:active{transform:scale(.98)}
 .btn.hot{height:56px;padding:0 10px 0 24px;border-radius:16px;font-size:17px;background:linear-gradient(180deg,var(--hot-2),var(--hot));box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 14px 30px -10px rgba(255,90,31,.6),0 4px 12px -4px rgba(255,90,31,.35)}
 .btn.hot i{width:32px;height:32px;background:rgba(255,255,255,.22)}
+@media (max-width:350px){.btn.hot{font-size:15.5px;padding:0 8px 0 16px}.btn.hot i{width:28px;height:28px}}
+/* The orange button and Apple's App Store badge go together: the button is the action, the
+   badge says where it goes. They share a row when there's room and stack when there isn't.
+   The badge is Apple's own artwork, untouched. Their rules: the black version, at least 40px
+   tall, a quarter of its height kept clear all round, no shadow, tilt or animation of it. */
+.get-row{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:16px}
+.store{display:inline-flex;vertical-align:top}
+.store img{display:block;height:48px;width:auto}
+@media (min-width:540px){.store img{height:56px}}
 
 /* header: a thin bar that stays out of the way. Clear over the top of the page,
    frosted once you scroll, and it tucks away while you scroll down. */
@@ -213,8 +228,8 @@ p{margin:0}
 @media (min-width:960px){.what{height:42px;padding:0 18px;font-size:19px;margin-bottom:20px}}
 .intro h1{max-width:12.2em;margin:0 auto}
 .intro .lede{max-width:21em;margin:16px auto 0;text-wrap:balance}
-.intro .btn.hot{margin-top:24px}
-.intro .lede,.intro .btn.hot,.byline{will-change:opacity}
+.intro .get-row{margin-top:24px}
+.intro .lede,.intro .get-row,.byline{will-change:opacity}
 .byline{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:16px;font:700 14px var(--body);color:var(--text-2)}
 .byline img{width:28px;height:28px;border-radius:50%;object-fit:cover}
 
@@ -407,23 +422,9 @@ p{margin:0}
 .ours h3{margin-top:10px;font-size:clamp(30px,3.6vw,42px);line-height:1.05;letter-spacing:-.028em}
 .ours h3 em{font-style:italic;font-weight:600;background:linear-gradient(100deg,#FF8A4C 0%,#E8451A 100%);-webkit-background-clip:text;background-clip:text;color:transparent;padding-right:.04em}
 .ours p{font:700 16.5px var(--body);color:var(--text-2)}
-/* a second way onto the waitlist, right where the point lands */
-.mini-join{margin-top:14px;display:flex;gap:8px;width:100%;max-width:440px;padding:6px;border-radius:18px;background:#fff;box-shadow:0 0 0 1px var(--line),var(--lift)}
-.mini-join input{flex:1;min-width:0;height:50px;border:0;background:transparent;font:600 16.5px var(--body);color:var(--ink);padding:0 12px;outline:none}
-.mini-join input::placeholder{color:#B1A9A1}
-.mini-join .btn.hot{height:50px;font-size:15.5px;padding:0 8px 0 16px;border-radius:13px}
-.mini-join .btn.hot i{width:28px;height:28px}
-.ours .mini-fine{font:600 13.5px var(--body);color:var(--muted)}
-.ours .mini-done{display:none;align-items:center;gap:10px;margin-top:14px;font:800 16px var(--body);color:var(--ink)}
-.mini-done i{width:28px;height:28px;border-radius:50%;background:#4A9163;display:grid;place-items:center}
-.mini-done svg{width:15px;height:15px}
-.is-joined .mini-join,.is-joined .ours .mini-fine{display:none}
-/* a box no person sees; bots fill it in and are quietly ignored */
-.hp{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}
-.join-err{margin:10px 0 0;font:700 13.5px var(--body);color:#C62F27;text-align:center}
-.join-err:empty{display:none}
-.is-joined .ours .mini-done{display:flex}
-@media (max-width:420px){.mini-join{flex-direction:column;padding:8px}.mini-join .btn.hot{justify-content:space-between}}
+/* a second App Store button and badge, right where the point lands. The space under them
+   keeps the section edge from cutting off the button's glow. */
+.ours .get-row{margin:14px 0 36px}
 @media (prefers-reduced-motion:reduce){.lane{animation:none}}
 
 /* ==========================================================
@@ -628,22 +629,14 @@ p{margin:0}
 .final::before{content:"";position:absolute;left:50%;top:44%;width:720px;height:420px;transform:translate(-50%,-50%);z-index:-1;background:radial-gradient(closest-side,rgba(255,90,31,.24),rgba(255,90,31,0));filter:blur(20px)}
 .final h2{margin-top:22px}
 .final .lede{max-width:24em;margin:16px auto 0}
-/* the waitlist is Ormy's FINAL NUDGE: a notification you can answer */
+/* the last App Store button sits in Ormy's FINAL NUDGE: a notification you can act on */
 .fn{--k:1.06px;margin:32px auto 0;max-width:460px;text-align:left;border-radius:calc(24 * var(--k));background:rgba(255,255,255,.96);box-shadow:0 0 0 .5px rgba(0,0,0,.06),0 26px 50px -22px rgba(26,23,20,.38),0 10px 22px -12px rgba(255,90,31,.28);padding-bottom:calc(14 * var(--k))}
 .fn .ntf{--k:inherit;background:none;box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
-.fn-form{display:flex;gap:8px;margin:0 calc(14 * var(--k));padding-top:calc(12 * var(--k));border-top:1px solid rgba(26,23,20,.08)}
-.fn-form input{flex:1;min-width:0;height:50px;border:0;border-radius:13px;background:#F2F1EF;font:600 16.5px var(--body);padding:0 14px;color:var(--ink);outline:none}
-.fn-form input::placeholder{color:#A9A19A}
-.fn-form input:focus{box-shadow:inset 0 0 0 2px #FFB38F;background:#fff}
-.fn-form .btn.hot{height:50px;font-size:15.5px;padding:0 8px 0 16px;border-radius:13px}
-.fn-form .btn.hot i{width:28px;height:28px}
-.fn-done{display:none;justify-items:center;gap:16px;margin:32px auto 0;max-width:400px}
-.fn-done p{font:800 16px var(--body);color:var(--ink)}
-.is-joined .fn{display:none}
-.is-joined .fn-done{display:grid;animation:land .55s cubic-bezier(.2,.9,.25,1.1)}
-@keyframes land{from{opacity:0;transform:translateY(12px) scale(.97)}}
+.fn-go{margin:0 calc(14 * var(--k));padding-top:calc(12 * var(--k));border-top:1px solid rgba(26,23,20,.08)}
+.fn-go .btn.hot{display:flex;justify-content:space-between;height:50px;font-size:15.5px;padding:0 8px 0 16px;border-radius:13px}
+.fn-go .btn.hot i{width:28px;height:28px}
+.final .store{margin-top:22px}
 .final .fine{margin-top:16px;font:600 13.5px var(--body);color:var(--muted)}
-@media (max-width:420px){.fn-form{flex-direction:column}.fn-form .btn.hot{justify-content:space-between}}
 
 .foot{border-top:1px solid var(--line)}
 .foot .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px;padding-block:28px calc(34px + env(safe-area-inset-bottom,0px));font:600 14px var(--body);color:var(--muted)}
@@ -651,6 +644,7 @@ p{margin:0}
 .foot nav a{text-decoration:none}
 .foot nav a:hover,.foot nav button:hover{color:var(--ink)}
 .foot nav button{padding:0;border:0;background:none;font:inherit;color:inherit;cursor:pointer}
+.foot .tm{flex-basis:100%;margin:0;font:500 12px/1.5 var(--body)}
 
 /* picture/video mode only */
 .zoomed{scrollbar-width:none}
@@ -662,7 +656,7 @@ p{margin:0}
   <div class="nav-in">
     <a class="brand" href="#top"><img src="img/icon.png" alt="">Ormy</a>
     <nav class="nav-links" aria-label="Page"><a href="#how">How it works</a><a href="#faq">Questions</a></nav>
-    <a class="nav-cta" href="#waitlist">Join the waitlist</a>
+    <a class="nav-cta" href="https://apps.apple.com/app/id6781041760" data-button="header">Download</a>
   </div>
 </header>
 
@@ -676,7 +670,7 @@ p{margin:0}
       <p class="what">ADHD reminder app</p>
       <h1>No more <em>forgetting</em> the things that matter</h1>
       <p class="lede">It comes to you, and keeps coming back until it's done.</p>
-      <a class="btn hot" href="#waitlist">Join the iPhone waitlist<i><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i></a>
+      <div class="get-row"><a class="btn hot" href="https://apps.apple.com/app/id6781041760" data-button="hero">Download on the App Store<i><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i></a><a class="store" href="https://apps.apple.com/app/id6781041760" data-button="hero-badge"><img src="img/app-store-badge.svg" alt="Download on the App Store" width="168" height="56"></a></div>
       <div class="byline"><img src="img/founder.jpg" alt="">Built by Kyle, who has ADHD too</div>
     </div>
 
@@ -792,14 +786,7 @@ p{margin:0}
     <span class="oi"><img src="img/icon.png" alt=""><b><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 12.5l4.3 4.3L18.5 8"/></svg></b></span>
     <h3>Built for brains that <em>forget</em>.</h3>
     <p>You don't open Ormy. It comes to you.</p>
-    <form class="mini-join" novalidate>
-      <label class="sr" for="email2">Email address</label>
-      <input id="email2" type="email" placeholder="you@email.com" autocomplete="email">
-      <input class="hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true">
-      <button class="btn hot" type="submit">Join the waitlist<i><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i></button>
-    </form>
-    <p class="mini-fine">Launch day, plus the odd update. Unsubscribe any time.</p>
-    <p class="mini-done" aria-live="polite"><i><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></i>You're on the list. See you on launch day.</p>
+    <div class="get-row"><a class="btn hot" href="https://apps.apple.com/app/id6781041760" data-button="why">Download on the App Store<i><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i></a><a class="store" href="https://apps.apple.com/app/id6781041760" data-button="why-badge"><img src="img/app-store-badge.svg" alt="Download on the App Store" width="168" height="56"></a></div>
   </div>
   <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
     <linearGradient id="gPlan" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9483FF"/><stop offset="1" stop-color="#5C6CF2"/></linearGradient>
@@ -981,7 +968,7 @@ p{margin:0}
 <section class="sec" id="faq">
   <div class="wrap faq">
     <div data-rise><span class="label">Questions</span><h2>Good to know</h2></div>
-    <details><summary>When can I get it?</summary><p>Ormy is coming to iPhone soon. Join the waitlist and we'll email you the day it's on the App Store.</p></details>
+    <details><summary>When can I get it?</summary><p>Now. Ormy is on the <a href="https://apps.apple.com/app/id6781041760" data-button="faq">App Store</a>, for iPhone.</p></details>
     <details><summary>Does it call or text me?</summary><p>No. It all happens on your iPhone: a nudge every 10 minutes for an hour, then a real alarm if you've switched one on for that reminder.</p></details>
     <details><summary>Is it only for people with ADHD?</summary><p>No. It's built by someone with ADHD, for anyone whose brain drops the important stuff.</p></details>
     <details><summary>Does it use AI?</summary><p>Only if you switch it on. When it's on, Ormy's AI sees a reminder's title and how far away it is. Nothing else.</p></details>
@@ -990,31 +977,18 @@ p{margin:0}
 </section>
 
 <!-- ================= FINAL CALL ================= -->
-<section class="final" id="waitlist">
+<section class="final" id="download">
   <div class="wrap">
-    <span class="label">Waitlist</span>
-    <h2>Be first when Ormy <em>lands</em></h2>
-    <p class="lede">We'll email you the day it's on the App Store, plus the odd update before then. Unsubscribe any time.</p>
+    <span class="label">Out now</span>
+    <h2>Stop finding out when it's <em>too late</em></h2>
+    <p class="lede">It's on the App Store now. Start with a free trial.</p>
 
     <div class="fn" id="finalNudge">
-      <div class="ntf"><img src="img/icon.png" alt=""><div><div class="top"><b>TIME SENSITIVE</b><span>now</span></div><div class="t">FINAL NUDGE — Join the waitlist</div><div class="s due">Due now</div></div></div>
-      <form class="fn-form" novalidate>
-        <label class="sr" for="email">Email address</label>
-        <input id="email" type="email" placeholder="you@email.com" autocomplete="email">
-        <input class="hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true">
-        <button class="btn hot" type="submit">Join<i><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i></button>
-      </form>
+      <div class="ntf"><img src="img/icon.png" alt=""><div><div class="top"><b>TIME SENSITIVE</b><span>now</span></div><div class="t">FINAL NUDGE — Download Ormy</div><div class="s due">Due now</div></div></div>
+      <div class="fn-go"><a class="btn hot" href="https://apps.apple.com/app/id6781041760" data-button="final">Download on the App Store<i><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></i></a></div>
     </div>
-
-    <div class="fn-done" aria-live="polite">
-      <div class="rc" id="joinCard" style="--tile:#FFF0E6;--ic:#E0763F">
-        <span class="rc-sweep"></span>
-        <div class="rc-main"><span class="rc-tick"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 12.5l4.3 4.3L18.5 8"/></svg></span><span class="rc-tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5.5" width="17" height="13" rx="2.5"/><path d="m4.5 7 7.5 6 7.5-6"/></svg></span><div class="rc-txt"><b>Join the waitlist</b><small>One-off reminder</small></div><span class="rc-grip"><i></i><i></i><i></i></span></div>
-        <div class="rc-foot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3l3 3-3 3"/><path d="M4 11V9.5A3.5 3.5 0 0 1 7.5 6H20"/><path d="M7 21l-3-3 3-3"/><path d="M20 13v1.5a3.5 3.5 0 0 1-3.5 3.5H4"/></svg><span id="chased">Ormy chased you 1 time</span></div>
-      </div>
-      <p>You're on the list. See you on launch day.</p>
-    </div>
-    <p class="fine">Free to join · iPhone · Built by someone with ADHD</p>
+    <a class="store" href="https://apps.apple.com/app/id6781041760" data-button="final-badge"><img src="img/app-store-badge.svg" alt="Download on the App Store" width="168" height="56"></a>
+    <p class="fine">iPhone · Built by someone with ADHD</p>
   </div>
 </section>
 
@@ -1024,6 +998,7 @@ p{margin:0}
     <nav aria-label="Guides"><a href="/best-adhd-reminder-apps/">Best ADHD reminder apps</a><a href="/adhd-forgetfulness/">ADHD forgetfulness</a><a href="/guides/">All guides</a></nav>
     <nav aria-label="Legal"><a href="https://kyleorm.github.io/ormy-legal/privacy.html">Privacy</a><a href="https://kyleorm.github.io/ormy-legal/terms.html">Terms</a><button type="button" id="trackingChoice">Tracking choice</button></nav>
     <span>© 2026 Ormy</span>
+    <p class="tm">Apple, the Apple logo and iPhone are trademarks of Apple Inc., registered in the U.S. and other countries. App Store is a service mark of Apple Inc.</p>
   </div>
 </footer>
 </main>
@@ -1051,7 +1026,7 @@ p{margin:0}
   var off = $('#off'), hole = $('#hole'), trails = $('#trails');
   var caps = $$('.cap'), logEl = $('#log'), logItems = $$('#log li'), notes = $$('#list .ntf');
   var agoOf = notes.map(function(n){ return $('.ago', n); });
-  var fades = [$('.what', intro), $('.lede', intro), $('.btn.hot', intro), $('.byline', intro)];
+  var fades = [$('.what', intro), $('.lede', intro), $('.get-row', intro), $('.byline', intro)];
   var clock = $('#clock');
   var L = {};
   var SVGNS = 'http://www.w3.org/2000/svg';
@@ -1568,7 +1543,7 @@ p{margin:0}
   }
 
   /* ---------------- the FINAL NUDGE ---------------- */
-  // The waitlist box is dressed as Ormy's own FINAL NUDGE, in the app's wording, due at the
+  // The last App Store button sits in Ormy's own FINAL NUDGE, in the app's wording, due at the
   // time you arrived on the page ("Due 4:12pm · 3 minutes ago").
   var landed = new Date();
   function clockOf(d){ var h = d.getHours(), m = d.getMinutes(); return (h % 12 || 12) + (m ? ':' + (m < 10 ? '0' : '') + m : '') + (h < 12 ? 'am' : 'pm'); }
@@ -1576,11 +1551,9 @@ p{margin:0}
     var mins = Math.floor((Date.now() - landed) / 60000), due = 'Due ' + clockOf(landed);
     return mins < 1 ? due : due + ' · ' + (mins === 1 ? '1 minute ago' : mins < 60 ? mins + ' minutes ago' : 'an hour ago');
   }
-  var finalSec = $('#waitlist'), sawFinal = false;
+  var finalSec = $('#download');
   function checkFinal(){
-    var fr = finalSec.getBoundingClientRect();
-    if (fr.top < innerHeight * .75) sawFinal = true;
-    if (fr.top < innerHeight) $('.due', finalSec).textContent = dueLine();
+    if (finalSec.getBoundingClientRect().top < innerHeight) $('.due', finalSec).textContent = dueLine();
   }
 
   /* ---------------- the header ---------------- */
@@ -1625,57 +1598,6 @@ p{margin:0}
     scroll(animate($('#railFill'), { transform: ['scaleY(0)', 'scaleY(1)'] }, { ease: 'linear' }), { target: $('#line'), offset: ['start 60%', 'end 60%'] });
     scroll(animate($('#hourFill'), { transform: ['scaleY(0)', 'scaleY(1)'] }, { ease: 'linear' }), { target: $('.ladder .rail'), offset: ['start 62%', 'end 62%'] });
   }
-
-  // Joining, from either box: the address goes onto the waitlist in Convex, and only once
-  // it's safely there is it ticked off like any reminder ("chased you 1 time" if they got
-  // as far as the FINAL NUDGE; no chased line if they joined before it).
-  var ENDPOINT = $('meta[name="waitlist-endpoint"]').content;
-  // A copy of the page (this computer, a preview link) never writes to the live list: it
-  // pretends the sign-up worked instead. A test once left a fake address in it.
-  var LOCAL = !window.ORMY_LIVE;
-  // The utm_ tags on the link they arrived by (an ad, a Reddit post, an email), so the
-  // sign-up says where it came from. Facebook and Instagram add fbclid to every link
-  // click, so an untagged one still counts as Meta.
-  var UTM = {}, query = new URLSearchParams(location.search);
-  ['source', 'medium', 'campaign', 'content'].forEach(function(k){ var val = query.get('utm_' + k); if (val) UTM[k] = val; });
-  if (!UTM.source && query.get('fbclid')) UTM.source = 'meta';
-  function showJoined(n){
-    var card = $('#joinCard');
-    $('#chased').textContent = 'Ormy chased you ' + n + (n === 1 ? ' time' : ' times');
-    card.classList.toggle('nochase', n < 1);
-    untick(card);
-    document.documentElement.classList.add('is-joined');
-    setTimeout(function(){ tick(card); }, reduce ? 0 : 450);
-  }
-  $$('.fn-form, .mini-join').forEach(function(form){
-    var input = $('input[type="email"]', form), btn = $('button', form), label = btn.firstChild.nodeValue, busy = false;
-    var err = document.createElement('p');
-    err.className = 'join-err'; err.setAttribute('role', 'alert');
-    form.parentNode.insertBefore(err, form.nextSibling);
-    form.addEventListener('submit', function(e){
-      e.preventDefault();
-      if (busy) return;
-      var email = input.value.trim();
-      err.textContent = '';
-      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { input.value = ''; input.placeholder = 'That email looks off. Try again?'; input.focus(); return; }
-      var n = sawFinal ? 1 : 0, where = form.classList.contains('mini-join') ? 'why' : 'final';
-      busy = true; btn.disabled = true; btn.firstChild.nodeValue = 'Joining…';
-      (LOCAL ? Promise.resolve({ ok: true }) : fetch(ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email, source: where, referrer: document.referrer, utm: UTM, company: $('.hp', form).value })
-      }))
-        .then(function(r){
-          if (!r.ok) throw new Error('waitlist ' + r.status);
-          if (window.fbq && !LOCAL) fbq('track', 'Lead');
-          // Which box, never the address: PostHog is never sent an email.
-          if (window.posthog && !LOCAL) posthog.capture('waitlist_joined', { form: where });
-          showJoined(n);
-        })
-        .catch(function(){ err.textContent = "Couldn't reach Ormy just then. Try again?"; })
-        .then(function(){ busy = false; btn.disabled = false; btn.firstChild.nodeValue = label; });
-    });
-  });
 })();
 </script>
 <style>
